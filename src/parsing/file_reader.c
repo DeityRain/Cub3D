@@ -1,5 +1,12 @@
 #include "cub3d.h"
 
+
+/*
+The map must be composed of only 6 possible characters: 0 for an empty space,
+1 for a wall, and N,S,E or W for the player’s start position and spawning
+orientation.*/
+
+
 int read_map_file(const char *filename, char ***lines, int *count)
 {
     //open the map file;
