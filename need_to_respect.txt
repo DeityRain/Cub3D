@@ -13,9 +13,29 @@ Where I am Now :
 
 I need to do : 
 
-The Parser: You start writing the code to read the .cub file, validate the textures (SO, NO, WE, EA), handle the RGB colors for floor/ceiling, and store the map (the 0s and 1s) into a 2D array while checking if it's "closed" by walls.
+Next Step:
+
+FILE_READER.C ---> CHECK THAT
+
+====================================================================================
+
+Best next step is: split file into config part + map part (find where map starts).
+Then validate config identifiers (NO, SO, WE, EA, F, C) are present exactly once.
+After that, extract/normalize map lines (keep spaces handling clear).
+Then run map rules: allowed chars, exactly one player, map closed.
+
+====================================================================================
 
 
-You ignore the file for now and hardcode a small map array in your code just to get the Raycasting math working. This is usually more fun because you get to see the "3D" effect sooner.
+The Parser: 
+You start writing the code to read the .cub file, validate the textures (SO, NO, WE, EA), 
+handle the RGB colors for floor/ceiling, and store the map (the 0s and 1s) into a 2D array 
+while checking if it's "closed" by walls.
+
+
+You ignore the file for now and hardcode a small map array in your code just to get the Raycasting 
+math working. This is usually more fun because you get to see the "3D" effect sooner.
+
+
 
 

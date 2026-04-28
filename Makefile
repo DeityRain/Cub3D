@@ -12,8 +12,8 @@ SRC_DIR     = src
 OBJ_DIR     = obj
 
 # --- Sources & Objects ---
-# This will find main.c inside the src/ folder
-SRCS        = $(SRC_DIR)/main.c
+# This finds all .c files inside src/ and its subfolders
+SRCS        = $(shell find $(SRC_DIR) -name '*.c')
 # This places .o files in a separate obj/ folder to keep things clean
 OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
@@ -35,7 +35,7 @@ $(MLX_LIB):
 
 # Rule to compile .c files from src/ into .o files in obj/
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

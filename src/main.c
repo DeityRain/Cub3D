@@ -1,14 +1,5 @@
-#include "mlx.h"
-#include <stdlib.h>
-#include <stdio.h>
-
-// 1. Define the Linux ESC keycode
-#define KC_ESC 65307
-
-typedef struct s_data {
-    void    *mlx_ptr;
-    void    *win_ptr;
-} t_data;
+#include "cub3d.h"
+#include "parsing.h"
 
 // 2. The function that actually closes the window
 int close_window(t_data *data)
@@ -32,9 +23,17 @@ int handle_keypress(int keysym, t_data *data)
     return (0);
 }
 
-int main(void)
+int main(int ac, char **av)
 {
     t_data  data;
+
+    if (ac != 2)
+    {
+        printf("Usage: ./cub3D <map.cub>\n");
+        return (1);
+    }
+    if (!validate_file(av[1]))
+        return (1);
 
     data.mlx_ptr = mlx_init();
     if (!data.mlx_ptr)
@@ -46,8 +45,6 @@ int main(void)
         free(data.mlx_ptr);
         return (1);
     }
-
-    // --- The Magic Hooks ---
 
     // Listen for the ESC key
     mlx_key_hook(data.win_ptr, handle_keypress, &data);
