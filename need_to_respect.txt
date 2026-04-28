@@ -1,0 +1,21 @@
+I dont have the right too use mlx_pixel_put (like you did on FDF) because its way too slow for that project.
+
+You gonna have too use an Image Buffer.
+
+instead of Drawing pixels one by one on the Screen you Will:
+
+- Create a Virtual Image in memory
+- write all your pixel colors into that memory Buffer.
+- push the entier image to the window in one go
+
+
+Where I am Now : 
+
+I need to do : 
+
+The Parser: You start writing the code to read the .cub file, validate the textures (SO, NO, WE, EA), handle the RGB colors for floor/ceiling, and store the map (the 0s and 1s) into a 2D array while checking if it's "closed" by walls.
+
+
+You ignore the file for now and hardcode a small map array in your code just to get the Raycasting math working. This is usually more fun because you get to see the "3D" effect sooner.
+
+
