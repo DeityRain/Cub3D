@@ -3,5 +3,7 @@
 
 int	validate_file(const char *filename);
 int read_map_file(const char *filename, char ***lines, int *count);
+int parse_cub_file(const char *filename, t_map *map);
+void free_map(t_map *map);
 
 #endif

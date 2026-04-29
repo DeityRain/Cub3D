@@ -11,31 +11,49 @@ instead of Drawing pixels one by one on the Screen you Will:
 
 Where I am Now : 
 
-I need to do : 
 
-Next Step:
+mini goal :
 
-FILE_READER.C ---> CHECK THAT
+1- Test running ./cub3D maps/miniMap.cub to confirm the full pipeline works end-to-end.
+
+2 - Implement map enclosure check (flood-fill validation that walls are closed).
+
+3 - Start rendering (initialize raycasting, display window content).
+
+
 
 ====================================================================================
 
-Best next step is: split file into config part + map part (find where map starts).
-Then validate config identifiers (NO, SO, WE, EA, F, C) are present exactly once.
-After that, extract/normalize map lines (keep spaces handling clear).
-Then run map rules: allowed chars, exactly one player, map closed.
+1 - Finish map parsing
+
+    validate the .cub file structure
+    extract textures, colors, and the map grid
+
+2 - Validate the map
+
+    exactly one player start
+    only valid characters
+    map closed by walls
+    no empty space leaks
+
+3 - Store the game state cleanly
+
+    create a main structure for textures, map, player, and MLX data
+    load all settings from the file into it
+
+4 - Set up rendering and player movement
+
+    initialize the window
+    draw the initial view
+    handle key input for movement and rotation
+
+5 - Implement raycasting and display
+
+    cast rays for each screen column
+    compute wall distances
+    draw vertical wall slices and update the frame
+
 
 ====================================================================================
 
-
-The Parser: 
-You start writing the code to read the .cub file, validate the textures (SO, NO, WE, EA), 
-handle the RGB colors for floor/ceiling, and store the map (the 0s and 1s) into a 2D array 
-while checking if it's "closed" by walls.
-
-
-You ignore the file for now and hardcode a small map array in your code just to get the Raycasting 
-math working. This is usually more fun because you get to see the "3D" effect sooner.
-
-
-
-
+im afraid of all the map_extraction file, i need too study

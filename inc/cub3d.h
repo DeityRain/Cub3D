@@ -13,9 +13,22 @@
 //Linux Keycodes
 # define KC_ESC 65307
 
+typedef struct s_map {
+	char	*no_path;	// north texture
+	char	*so_path;	// south texture
+	char	*we_path;	//west texture
+	char	*ea_texture;	//east texture
+	int		floor_rgb[3];
+	int		ceiling_rgb[3];
+	char	**grid;		//2D map Array
+	int		height;
+	int		width;
+} t_map;
+
 typedef struct s_data {
 	void	*mlx_ptr;
 	void	*win_ptr;
+	t_map	map;
 } t_data;
 
 typedef struct s_img {
@@ -34,18 +47,6 @@ typedef struct s_player {
 	double		plane_x;
 	double		plane_y;
 } t_player;
-
-typedef struct s_map {
-	char	*no_path;	// north texture
-	char	*so_path;	// south texture
-	char	*we_path;	//west texture
-	char	*ea_texture;	//east texture
-	int		floor_rgb[3];
-	int		ceiling_rgb[3];
-	char	**grid;		//2D map Array
-	int		height;
-	int		widthl
-}	t_map;
 
 int    close_window(t_data *data);
 int    handle_keypress(int keysym, t_data *data);
