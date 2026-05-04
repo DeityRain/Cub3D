@@ -23,6 +23,13 @@ typedef struct s_map {
 	char	**grid;		//2D map Array
 	int		height;
 	int		width;
+	double	player_x;
+	double	player_y;
+	double	dir_x;
+	double	dir_y;
+	double	plane_x;
+	double	plane_y;
+	char	player_dir;
 } t_map;
 
 typedef struct s_data {

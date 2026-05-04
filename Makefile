@@ -28,32 +28,31 @@ MLX_FLAGS   = -L$(MLX_PATH) -lmlx -lXext -lX11 -lm -lz
 all: $(NAME)
 
 $(NAME): $(MLX_LIB) $(LIBFT_LIB) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(MLX_FLAGS) -L$(LIBFT_PATH) -lft -o $(NAME)
-	@echo "✅ $(NAME) compiled successfully!"
+	@$(CC) $(CFLAGS) $(OBJS) $(MLX_FLAGS) -L$(LIBFT_PATH) -lft -o $(NAME)
+	@echo "$(NAME) compiled successfully!"
 
 $(MLX_LIB):
-	@echo "🔧 Compiling MiniLibX..."
+	@echo "Compiling MiniLibX..."
 	@make -C $(MLX_PATH) > /dev/null 2>&1
 
 $(LIBFT_LIB):
-	@echo "🔧 Compiling Libft..."
 	@make -C $(LIBFT_PATH) > /dev/null 2>&1
 
 # Rule to compile .c files from src/ into .o files in obj/
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@rm -rf $(OBJ_DIR)
 	@make -C $(LIBFT_PATH) clean > /dev/null 2>&1
 	@make -C $(MLX_PATH) clean > /dev/null 2>&1
-	@echo "🧹 Objects removed."
+	@echo "Objects removed."
 
 fclean: clean
 	@rm -f $(NAME)
 	@make -C $(LIBFT_PATH) fclean > /dev/null 2>&1
-	@echo "🗑️  Executable removed."
+	@echo "Executable removed."
 
 re: fclean all
 

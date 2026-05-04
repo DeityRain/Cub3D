@@ -1,77 +1,95 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   file_reader.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: qdeffaux <qdeffaux@student.42luxembourg.lu> +#+  +:+       +#+       */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/27 09:42:00 by qdeffaux          #+#    #+#             */
+/*   Updated: 2026/04/28 10:15:00 by qdeffaux         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
+/*
+** expand_lines_buffer: Reallocates lines array when capacity is reached.
+*/
+static int	expand_lines_buffer(char ***arr, int *capacity, int n)
+{
+	int		newcap;
+	char	**tmp;
+
+	if (n < *capacity)
+		return (1);
+	newcap = *capacity * 2;
+	tmp = realloc(*arr, sizeof(char *) * newcap);
+	if (!tmp)
+		return (0);
+	*arr = tmp;
+	*capacity = newcap;
+	return (1);
+}
 
 /*
-The map must be composed of only 6 possible characters: 0 for an empty space,
-1 for a wall, and N,S,E or W for the player’s start position and spawning
-orientation.
+** free_lines_array: Frees all line strings and the lines array.
 */
-
-int read_map_file(const char *filename, char ***lines, int *count)
+void	free_lines_array(char **arr, int count)
 {
-    int fd;
-    char *line;
-    char **arr = NULL;
-    int capacity = 0;
-    int n = 0;
+	int	i;
 
-    if (!filename || !lines || !count)
-        return 0;
+	i = 0;
+	while (i < count)
+		free(arr[i++]);
+	free(arr);
+}
 
-    fd = open(filename, O_RDONLY);
-    if (fd < 0)
-        return 0;
+/*
+** read_and_buffer_lines: Reads lines from file and buffers them.
+*/
+static int	read_and_buffer_lines(int fd, char ***arr, int *cap, int *n)
+{
+	char	*line;
 
-    capacity = 16;
-    arr = malloc(sizeof(char *) * capacity);
-    if (!arr)
-    {
-        close(fd);
-        return 0;
-    }
+	while (1)
+	{
+		line = get_next_line(fd);
+		if (!line)
+			break ;
+		if (!expand_lines_buffer(arr, cap, *n))
+			return (free_lines_array(*arr, *n), free(line), close(fd), 0);
+		(*arr)[(*n)++] = line;
+	}
+	return (1);
+}
 
-    while ((line = get_next_line(fd)))
-    {
-        if (n >= capacity)
-        {
-            int newcap = capacity * 2;
-            char **tmp = realloc(arr, sizeof(char *) * newcap);
-            if (!tmp)
-            {
-                free(line);
-                for (int i = 0; i < n; ++i)
-                    free(arr[i]);
-                free(arr);
-                close(fd);
-                *lines = NULL;
-                *count = 0;
-                return 0;
-            }
-            arr = tmp;
-            capacity = newcap;
-        }
-        arr[n++] = line;
-    }
+/*
+** read_map_file: Reads all lines from file into a dynamic array.
+*/
+int	read_map_file(const char *filename, char ***lines, int *count)
+{
+	int		fd;
+	char	**arr;
+	int		capacity;
+	int		n;
 
-    close(fd);
-
-    if (n >= capacity)
-    {
-        char **tmp = realloc(arr, sizeof(char *) * (n + 1));
-        if (!tmp)
-        {
-            for (int i = 0; i < n; ++i)
-                free(arr[i]);
-            free(arr);
-            *lines = NULL;
-            *count = 0;
-            return 0;
-        }
-        arr = tmp;
-    }
-    arr[n] = NULL;
-
-    *lines = arr;
-    *count = n;
-    return 1;
+	if (!filename || !lines || !count)
+		return (0);
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		return (0);
+	capacity = 16;
+	arr = malloc(sizeof(char *) * capacity);
+	if (!arr)
+		return (close(fd), 0);
+	n = 0;
+	if (!read_and_buffer_lines(fd, &arr, &capacity, &n))
+		return (0);
+	close(fd);
+	if (!expand_lines_buffer(&arr, &capacity, n))
+		return (free_lines_array(arr, n), 0);
+	arr[n] = NULL;
+	*lines = arr;
+	*count = n;
+	return (1);
 }

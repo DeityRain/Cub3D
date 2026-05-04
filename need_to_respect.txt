@@ -9,51 +9,33 @@ instead of Drawing pixels one by one on the Screen you Will:
 - push the entier image to the window in one go
 
 
-Where I am Now : 
-
-
 mini goal :
 
-1- Test running ./cub3D maps/miniMap.cub to confirm the full pipeline works end-to-end.
+Best next milestone
 
-2 - Implement map enclosure check (flood-fill validation that walls are closed).
+1 - Create an image buffer module
 
-3 - Start rendering (initialize raycasting, display window content).
+init MLX image
+get pixel data pointer
+write pixels in memory
+render the whole image to the window
+destroy the image cleanly on exit
 
+2 - Add a basic render loop
 
+clear screen
+draw ceiling/floor
+display buffer
 
-====================================================================================
+3 - Then implement raycasting
 
-1 - Finish map parsing
+cast one ray per screen column
+find wall hit
+draw wall slice
 
-    validate the .cub file structure
-    extract textures, colors, and the map grid
+4 - After that
 
-2 - Validate the map
-
-    exactly one player start
-    only valid characters
-    map closed by walls
-    no empty space leaks
-
-3 - Store the game state cleanly
-
-    create a main structure for textures, map, player, and MLX data
-    load all settings from the file into it
-
-4 - Set up rendering and player movement
-
-    initialize the window
-    draw the initial view
-    handle key input for movement and rotation
-
-5 - Implement raycasting and display
-
-    cast rays for each screen column
-    compute wall distances
-    draw vertical wall slices and update the frame
-
-
-====================================================================================
-
-im afraid of all the map_extraction file, i need too study
+player movement
+collision detection
+textures
+minimap if needed
