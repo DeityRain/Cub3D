@@ -56,3 +56,9 @@ player movement
 collision detection
 textures
 minimap if needed
+
+->
+I'll add a short tracked plan for the raycasting work, then implement DDA + wall-slice drawing in raycasting.c and compile to verify.
+
+Reviewed 3 files and implemented DDA for Raycasting
+Now I'll implement the DDA raycasting and wall-slice drawing inside render_raycasting in render.c.
