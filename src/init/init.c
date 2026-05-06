@@ -12,6 +12,30 @@
 
 #include "cub3d.h"
 
+/*
+** init_mlx: Initializes MLX context and window.
+*/
+int	init_mlx(t_data *data)
+{
+	data->mlx_ptr = mlx_init();
+	if (!data->mlx_ptr)
+	{
+		ft_putendl_fd("Error: failed to init MLX", 2);
+		return (0);
+	}
+	data->win_ptr = mlx_new_window(data->mlx_ptr, WIN_WIDTH, WIN_HEIGHT,
+			"cub3D");
+	if (!data->win_ptr)
+	{
+		ft_putendl_fd("Error: failed to create window", 2);
+		return (0);
+	}
+	return (1);
+}
+
+/*
+** Initializes the game image.
+*/
 int	init_image(t_data *data)
 {
 	data->img.img_ptr = mlx_new_image(data->mlx_ptr, WIN_WIDTH, WIN_HEIGHT);

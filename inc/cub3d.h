@@ -52,7 +52,7 @@ typedef struct s_map {
 	char	*we_path;	//west texture
 	char	*ea_texture;	//east texture
 	int		floor_rgb[3];
-	int		ceiling_rgb[3];
+	int		ceil_rgb[3];
 	char	**grid;		//2D map Array
 	int		height;
 	int		width;
@@ -71,6 +71,7 @@ typedef struct s_img {
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
+	
 } t_img;
 
 typedef struct s_data {
@@ -113,6 +114,7 @@ void 			free_map(t_map *map);
 /* ************************************************************************** */
 
 int    			init_image(t_data *data);
+int				init_mlx(t_data *data);
 
 /* ************************************************************************** */
 /* Render functions													  		  */
@@ -121,6 +123,17 @@ int    			init_image(t_data *data);
 unsigned char	*get_pixel_ptr(t_data *data, int x, int y);
 int    			put_pixel(t_data *data, int x, int y, int color);
 void   			render_image(t_data *data);
+void			render_floor_and_ceiling(t_data *data);
+void			render_raycasting(t_data *data);
 int				render_loop(void *param);
+void			fill_row(t_data *data, int y, int color);
+int				rgb_to_int(int rgb[3]);
+
+/* ************************************************************************** */
+/* Raycasting functions												  		  */
+/* ************************************************************************** */
+
+void			compute_ray_direction(t_data *data, int x, double *ray_dir_x, double *ray_dir_y);
+
 
 #endif

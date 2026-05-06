@@ -38,27 +38,6 @@ int	handle_keypress(int keysym, t_data *data)
 }
 
 /*
-** init_mlx: Initializes MLX context and window.
-*/
-static int	init_mlx(t_data *data)
-{
-	data->mlx_ptr = mlx_init();
-	if (!data->mlx_ptr)
-	{
-		ft_putendl_fd("Error: failed to init MLX", 2);
-		return (0);
-	}
-	data->win_ptr = mlx_new_window(data->mlx_ptr, WIN_WIDTH, WIN_HEIGHT,
-			"cub3D");
-	if (!data->win_ptr)
-	{
-		ft_putendl_fd("Error: failed to create window", 2);
-		return (0);
-	}
-	return (1);
-}
-
-/*
 ** setup_hooks: Attaches keyboard and close event handlers.
 */
 static int	setup_hooks(t_data *data)
@@ -69,8 +48,33 @@ static int	setup_hooks(t_data *data)
 }
 
 /*
-** main: Entry point - parses map file and starts game loop.
+** verifications: Validates file, parses map, and initializes MLX/image.
 */
+static int	verifications(t_data *data, char **av)
+{
+	if (!validate_file(av[1]))
+		return (0);
+	if (!parse_cub_file(av[1], &data->map))
+		return (0);
+	if (!init_mlx(data))
+		return (free_map(&data->map), 0);
+	if (!init_image(data))
+	{
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+		free(data->mlx_ptr);
+		free_map(&data->map);
+		return (0);
+	}
+	if (!setup_hooks(data))
+	{
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+		free(data->mlx_ptr);
+		free_map(&data->map);
+		return (0);
+	}
+	return (1);
+}
+
 int	main(int ac, char **av)
 {
 	t_data	data;
@@ -80,24 +84,11 @@ int	main(int ac, char **av)
 		ft_putendl_fd("Usage: ./cub3D <map.cub>", 2);
 		return (1);
 	}
-	if (!validate_file(av[1]))
-		return (1);
-	if (!parse_cub_file(av[1], &data.map))
-		return (1);
-	if (!init_mlx(&data))
-		return (free_map(&data.map), 1);
-	if (!init_image(&data))
+	init_map(&data.map);
+	init_data(&data);
+	if (!verifications(&data, av))
 	{
-		mlx_destroy_window(data.mlx_ptr, data.win_ptr);
-		free(data.mlx_ptr);
-		free_map(&data.map);
-		return (1);
-	}
-	if (!setup_hooks(&data))
-	{
-		mlx_destroy_window(data.mlx_ptr, data.win_ptr);
-		free(data.mlx_ptr);
-		free_map(&data.map);
+		ft_putendl_fd("Error: failed to initialize game", 2);
 		return (1);
 	}
 	mlx_loop_hook(data.mlx_ptr, render_loop, &data);

@@ -101,9 +101,9 @@ int	parse_ceiling_color(t_map *map, const char *line, int *parsed)
 
 	if (!parse_color(line + 1, out))
 		return (0);
-	map->ceiling_rgb[0] = out[0];
-	map->ceiling_rgb[1] = out[1];
-	map->ceiling_rgb[2] = out[2];
+	map->ceil_rgb[0] = out[0];
+	map->ceil_rgb[1] = out[1];
+	map->ceil_rgb[2] = out[2];
 	(*parsed)++;
 	return (1);
 }

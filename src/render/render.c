@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render.c                                             :+:      :+:    :+: */
+/*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qdeffaux <qdeffaux@student.42luxembourg.lu> +#+  +:+       +#+       */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,6 +12,9 @@
 
 #include "cub3d.h"
 
+/*
+** write_pixel_color: Writes color bytes to pixel memory using the image endian.
+*/
 static void	write_pixel_color(t_data *data, unsigned char *pixel, int color)
 {
 	int				bytes_per_pixel;
@@ -39,19 +42,9 @@ static void	write_pixel_color(t_data *data, unsigned char *pixel, int color)
 	}
 }
 
-int	put_pixel(t_data *data, int x, int y, int color)
-{
-	unsigned char	*pixel;
-
-	if (!data || !data->img.addr)
-		return (0);
-	if (x < 0 || x >= WIN_WIDTH || y < 0 || y >= WIN_HEIGHT)
-		return (0);
-	pixel = get_pixel_ptr(data, x, y);
-	write_pixel_color(data, pixel, color);
-	return (1);
-}
-
+/*
+** render_image: Pushes the current image buffer to the MLX window.
+*/
 void	render_image(t_data *data)
 {
 	if (!data || !data->mlx_ptr || !data->win_ptr || !data->img.img_ptr)
@@ -60,28 +53,60 @@ void	render_image(t_data *data)
 		0);
 }
 
-int render_loop(void *param)
+/*
+** render_floor_and_ceiling: Fills the top half and bottom half of the screen.
+*/
+void	render_floor_and_ceiling(t_data *data)
 {
-    t_data  *data;
-    int     x;
-    int     y;
-    int     ceil_col;
-    int     floor_col;
+	int	x;
+	int	y;
+	int	ceil_col;
+	int	floor_col;
 
-    data = (t_data *) param;
-    ceil_col = (data->map.ceiling_rgb[0] << 16) | (data->map.ceiling_rgb[1] << 8) | data->map.ceiling_rgb[2];
-    floor_col = (data->map.floor_rgb[0] << 16) | (data->map.floor_rgb[1] << 8) | data->map.floor_rgb[2];
+	if (!data || !data->mlx_ptr || !data->win_ptr || !data->img.img_ptr)
+		return ;
+	ceil_col = rgb_to_int(data->map.ceil_rgb);
+	floor_col = rgb_to_int(data->map.floor_rgb);
+	y = 0;
+	while (y < WIN_HEIGHT / 2)
+	{
+		fill_row(data, y, ceil_col);
+		y++;
+	}
+	while (y < WIN_HEIGHT)
+	{
+		fill_row(data, y, floor_col);
+		y++;
+	}
+}
 
-    for(y = 0; y < (WIN_HEIGHT / 2); ++y)
-    {
-        for(x = 0; x < WIN_WIDTH; ++x)
-            put_pixel(data, x, y, ceil_col);
-    }
-    for(y = (WIN_HEIGHT / 2); y < WIN_HEIGHT; ++y)
-    {
-        for(x = 0; x < WIN_WIDTH; ++x)
-            put_pixel(data, x, y, floor_col);
-    }
-    render_image(data);
-    return (0);
+/*
+** render_raycasting: Casts one ray per screen column.
+*/
+void	render_raycasting(t_data *data)
+{
+	int		x;
+	double	ray_dir_x;
+	double	ray_dir_y;
+
+	x = 0;
+	while (x < WIN_WIDTH)
+	{
+		compute_ray_direction(data, x, &ray_dir_x, &ray_dir_y);
+		x++;
+	}
+}
+
+/*
+** render_loop: Main render callback called every frame by MLX.
+*/
+int	render_loop(void *param)
+{
+	t_data	*data;
+
+	data = (t_data *)param;
+	render_floor_and_ceiling(data);
+	render_raycasting(data);
+	render_image(data);
+	return (0);
 }
