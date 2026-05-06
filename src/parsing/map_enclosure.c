@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include "parsing.h"
 
 /*
 ** free_grid_copy: Frees copied grid used for flood-fill validation.

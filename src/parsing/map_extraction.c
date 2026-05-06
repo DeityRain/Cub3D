@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include "parsing.h"
 
 extern int	validate_map_chars(t_map *map);
 extern int	parse_header(char **lines, int count, int *idx, t_map *map);

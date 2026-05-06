@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/inc",
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/src/**",
+        "${workspaceFolder}/libft",
+        "${workspaceFolder}/libft/ft_printf",
+        "${workspaceFolder}/libft/get_next_line",
+        "${workspaceFolder}/minilibx"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "c11",
+      "intelliSenseMode": "linux-gcc-x64"
+    }
+  ],
+  "version": 4
+}

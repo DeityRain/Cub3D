@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include "parsing.h"
 
 /*
 ** get_value_after_key: Extracts value after header key + whitespace.
@@ -32,13 +31,17 @@ static char	*get_value_after_key(const char *line, int key_len)
 int	parse_no_texture(t_map *map, const char *line, int *parsed)
 {
 	char	*val;
+	char	*trimmed;
 
 	if (map->no_path)
 		return (0);
 	val = ft_strdup(line + 2);
-	while (*val && (*val == ' ' || *val == '\t'))
-		val++;
-	map->no_path = ft_strdup(val);
+	if (!val)
+		return (0);
+	trimmed = val;
+	while (*trimmed && (*trimmed == ' ' || *trimmed == '\t'))
+		trimmed++;
+	map->no_path = ft_strdup(trimmed);
 	free(val);
 	if (!map->no_path)
 		return (0);

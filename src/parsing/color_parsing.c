@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include "parsing.h"
 
 /*
 ** free_split: Frees array of strings from ft_split.

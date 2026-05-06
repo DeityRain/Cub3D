@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include "parsing.h"
 
 /*
 ** free_partial_grid: Frees allocated rows in temporary padded grid.

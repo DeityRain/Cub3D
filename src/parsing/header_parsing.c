@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include "parsing.h"
 
 extern int	parse_no_texture(t_map *map, const char *line, int *parsed);
 extern int	parse_so_texture(t_map *map, const char *line, int *parsed);

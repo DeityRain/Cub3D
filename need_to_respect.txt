@@ -13,27 +13,44 @@ mini goal :
 
 Best next milestone
 
-1 - Create an image buffer module
+=========================================
 
-init MLX image
-get pixel data pointer
-write pixels in memory
-render the whole image to the window
-destroy the image cleanly on exit
+The first raycasting step is:
 
-2 - Add a basic render loop
+Cast one ray for each vertical column of the screen
 
-clear screen
-draw ceiling/floor
-display buffer
+so for x = 0 to WIN_WIDTH - 1
+Convert the screen column into a camera coordinate
 
-3 - Then implement raycasting
+cameraX = 2 * x / WIN_WIDTH - 1
+this gives a value from -1 to 1
+Build the ray direction
+
+rayDirX = dir_x + plane_x * cameraX
+rayDirY = dir_y + plane_y * cameraX
+So the very first raycasting goal is just:
+
+take the player direction
+take the camera plane
+compute a ray direction for each column
+That is the base of the whole system.
+
+After that, the next steps are:
+
+find which grid square the ray enters first
+use DDA to march through the map
+detect the wall hit
+If you want, I can guide you through just step 1 next: setting up cameraX and the ray direction.
+
+=========================================
+
+1 - Then implement raycasting
 
 cast one ray per screen column
 find wall hit
 draw wall slice
 
-4 - After that
+2 - After that
 
 player movement
 collision detection

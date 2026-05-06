@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include "parsing.h"
 
 /*
 ** is_player_char: Checks whether tile is a player start marker.

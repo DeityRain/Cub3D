@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include "parsing.h"
 
 /*
 ** close_window: Cleans up resources and exits program.
@@ -33,7 +32,7 @@ int	close_window(t_data *data)
 */
 int	handle_keypress(int keysym, t_data *data)
 {
-	if (keysym == KC_ESC)
+	if (keysym == ESC_KEY)
 		close_window(data);
 	return (0);
 }
@@ -49,7 +48,8 @@ static int	init_mlx(t_data *data)
 		ft_putendl_fd("Error: failed to init MLX", 2);
 		return (0);
 	}
-	data->win_ptr = mlx_new_window(data->mlx_ptr, 800, 600, "cub3D");
+	data->win_ptr = mlx_new_window(data->mlx_ptr, WIN_WIDTH, WIN_HEIGHT,
+			"cub3D");
 	if (!data->win_ptr)
 	{
 		ft_putendl_fd("Error: failed to create window", 2);
@@ -86,6 +86,13 @@ int	main(int ac, char **av)
 		return (1);
 	if (!init_mlx(&data))
 		return (free_map(&data.map), 1);
+	if (!init_image(&data))
+	{
+		mlx_destroy_window(data.mlx_ptr, data.win_ptr);
+		free(data.mlx_ptr);
+		free_map(&data.map);
+		return (1);
+	}
 	if (!setup_hooks(&data))
 	{
 		mlx_destroy_window(data.mlx_ptr, data.win_ptr);
@@ -93,6 +100,7 @@ int	main(int ac, char **av)
 		free_map(&data.map);
 		return (1);
 	}
+	mlx_loop_hook(data.mlx_ptr, render_loop, &data);
 	mlx_loop(data.mlx_ptr);
 	return (0);
 }
