@@ -15,7 +15,7 @@
 /*
 ** write_pixel_color: Writes color bytes to pixel memory using the image endian.
 */
-static void	write_pixel_color(t_data *data, unsigned char *pixel, int color)
+void	write_pixel_color(t_data *data, unsigned char *pixel, int color)
 {
 	int				bytes_per_pixel;
 	unsigned int	col;
@@ -58,7 +58,6 @@ void	render_image(t_data *data)
 */
 void	render_floor_and_ceiling(t_data *data)
 {
-	int	x;
 	int	y;
 	int	ceil_col;
 	int	floor_col;

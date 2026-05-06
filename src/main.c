@@ -84,8 +84,7 @@ int	main(int ac, char **av)
 		ft_putendl_fd("Usage: ./cub3D <map.cub>", 2);
 		return (1);
 	}
-	init_map(&data.map);
-	init_data(&data);
+	ft_bzero(&data, sizeof(t_data));
 	if (!verifications(&data, av))
 	{
 		ft_putendl_fd("Error: failed to initialize game", 2);
