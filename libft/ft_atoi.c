@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qdeffaux <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: qdeffaux <qdeffaux@student.42luxembourg.lu> +#+  +:+       +#+       */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 14:04:46 by qdeffaux          #+#    #+#             */
 /*   Updated: 2025/07/10 10:04:37 by qdeffaux         ###   ########.fr       */

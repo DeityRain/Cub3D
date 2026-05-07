@@ -18,11 +18,13 @@
 static char	*get_value_after_key(const char *line, int key_len)
 {
 	const char	*p;
+	char		*value;
 
 	p = line + key_len;
 	while (*p && (*p == ' ' || *p == '\t'))
 		p++;
-	return (ft_strdup(p));
+	value = ft_strtrim(p, " \t\n");
+	return (value);
 }
 
 /*
@@ -30,19 +32,9 @@ static char	*get_value_after_key(const char *line, int key_len)
 */
 int	parse_no_texture(t_map *map, const char *line, int *parsed)
 {
-	char	*val;
-	char	*trimmed;
-
 	if (map->no_path)
 		return (0);
-	val = ft_strdup(line + 2);
-	if (!val)
-		return (0);
-	trimmed = val;
-	while (*trimmed && (*trimmed == ' ' || *trimmed == '\t'))
-		trimmed++;
-	map->no_path = ft_strdup(trimmed);
-	free(val);
+	map->no_path = get_value_after_key(line, 2);
 	if (!map->no_path)
 		return (0);
 	(*parsed)++;
@@ -88,5 +80,31 @@ int	parse_ea_texture(t_map *map, const char *line, int *parsed)
 	if (!map->ea_path)
 		return (0);
 	(*parsed)++;
+	return (1);
+}
+
+/* parse_floor_texture: optional FT path */
+int	parse_floor_texture(t_map *map, const char *line, int *parsed)
+{
+	(void)parsed;
+	if (map->floor_tex_path)
+		return (0);
+	map->floor_tex_path = get_value_after_key(line, 2);
+	if (!map->floor_tex_path)
+		return (0);
+	/* do not increment parsed: optional */
+	return (1);
+}
+
+/* parse_ceil_texture: optional CT path */
+int	parse_ceil_texture(t_map *map, const char *line, int *parsed)
+{
+	(void)parsed;
+	if (map->ceil_tex_path)
+		return (0);
+	map->ceil_tex_path = get_value_after_key(line, 2);
+	if (!map->ceil_tex_path)
+		return (0);
+	/* do not increment parsed: optional */
 	return (1);
 }

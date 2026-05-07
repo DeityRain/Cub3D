@@ -30,12 +30,16 @@ static char	**copy_grid(t_map *map)
 	char	**copy;
 	int		r;
 
+	if (!map || !map->grid || map->height <= 0)
+		return (NULL);
 	copy = malloc(sizeof(char *) * (map->height + 1));
 	if (!copy)
 		return (NULL);
 	r = 0;
 	while (r < map->height)
 	{
+		if (!map->grid[r])
+			return (free_grid_copy(copy, r), NULL);
 		copy[r] = ft_strdup(map->grid[r]);
 		if (!copy[r])
 			return (free_grid_copy(copy, r), NULL);
@@ -83,6 +87,8 @@ int	check_map_enclosed(t_map *map)
 	int		row;
 	int		col;
 
+	if (!map || !map->grid || map->height <= 0)
+		return (0);
 	copy = copy_grid(map);
 	if (!copy)
 		return (0);

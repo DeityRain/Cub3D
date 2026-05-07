@@ -18,6 +18,8 @@ extern int	parse_we_texture(t_map *map, const char *line, int *parsed);
 extern int	parse_ea_texture(t_map *map, const char *line, int *parsed);
 extern int	parse_floor_color(t_map *map, const char *line, int *parsed);
 extern int	parse_ceiling_color(t_map *map, const char *line, int *parsed);
+extern int	parse_floor_texture(t_map *map, const char *line, int *parsed);
+extern int	parse_ceil_texture(t_map *map, const char *line, int *parsed);
 extern int	is_line_empty(const char *s);
 extern int	is_map_line(const char *s);
 
@@ -36,6 +38,10 @@ int	parse_header_line(t_map *map, const char *line, int *parsed)
 		return (parse_we_texture(map, line, parsed));
 	if (ft_strncmp(line, "EA", 2) == 0 && (line[2] == ' ' || line[2] == '\t'))
 		return (parse_ea_texture(map, line, parsed));
+	if (ft_strncmp(line, "FT", 2) == 0 && (line[2] == ' ' || line[2] == '\t'))
+		return (parse_floor_texture(map, line, parsed));
+	if (ft_strncmp(line, "CT", 2) == 0 && (line[2] == ' ' || line[2] == '\t'))
+		return (parse_ceil_texture(map, line, parsed));
 	if (line[0] == 'F' && (line[1] == ' ' || line[1] == '\t'))
 		return (parse_floor_color(map, line, parsed));
 	if (line[0] == 'C' && (line[1] == ' ' || line[1] == '\t'))

@@ -64,10 +64,14 @@ int	extract_player_data(t_map *map)
 	int	col;
 	int	found;
 
+	if (!map || !map->grid || map->height <= 0)
+		return (0);
 	row = 0;
 	found = 0;
 	while (row < map->height)
 	{
+		if (!map->grid[row])
+			return (0);
 		col = 0;
 		while (map->grid[row][col])
 		{

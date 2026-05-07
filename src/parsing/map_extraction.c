@@ -18,6 +18,20 @@ extern int	find_map_bounds(char **lines, int count, int *start, int *end);
 extern char	**collect_map_lines(char **lines, int start, int height, int *w);
 extern void	free_lines_array(char **arr, int count);
 
+static char	*get_map_base_dir(const char *filename)
+{
+	char		*slash;
+	size_t		dir_len;
+
+	slash = ft_strrchr(filename, '/');
+	if (!slash)
+		return (ft_strdup("."));
+	dir_len = slash - filename;
+	if (dir_len == 0)
+		return (ft_strdup("/"));
+	return (ft_substr(filename, 0, dir_len));
+}
+
 /*
 ** init_map: Initializes all map struct fields to NULL/0.
 */
@@ -27,6 +41,9 @@ static void	init_map(t_map *map)
 	map->so_path = NULL;
 	map->we_path = NULL;
 	map->ea_path = NULL;
+	map->floor_tex_path = NULL;
+	map->ceil_tex_path = NULL;
+	map->base_dir = NULL;
 	map->floor_rgb[0] = 211;
 	map->floor_rgb[1] = 211;
 	map->floor_rgb[2] = 211;
@@ -59,6 +76,9 @@ static int	load_and_setup_map(const char *filename, t_map *map,
 	if (!read_map_file(filename, &lines, &count))
 		return (0);
 	init_map(map);
+	map->base_dir = get_map_base_dir(filename);
+	if (!map->base_dir)
+		return (free_lines_array(lines, count), 0);
 	i = 0;
 	if (!parse_header(lines, count, &i, map))
 		return (free_lines_array(lines, count), 0);
@@ -135,6 +155,12 @@ void	free_map(t_map *map)
 		free(map->we_path);
 	if (map->ea_path)
 		free(map->ea_path);
+	if (map->floor_tex_path)
+		free(map->floor_tex_path);
+	if (map->ceil_tex_path)
+		free(map->ceil_tex_path);
+	if (map->base_dir)
+		free(map->base_dir);
 	if (map->grid)
 	{
 		i = 0;

@@ -52,7 +52,7 @@ static char	*make_inner_row(const char *src, int width)
 	i = 0;
 	while (i < width)
 	{
-		if (src[i])
+		if (src && src[i])
 			row[i + 1] = src[i];
 		else
 			row[i + 1] = ' ';
@@ -82,6 +82,8 @@ int	pad_map_grid(t_map *map)
 	char	**new_grid;
 	int		r;
 
+	if (!map || !map->grid || map->height <= 0 || map->width <= 0)
+		return (0);
 	new_grid = malloc(sizeof(char *) * (map->height + 3));
 	if (!new_grid)
 		return (0);
@@ -91,6 +93,8 @@ int	pad_map_grid(t_map *map)
 	r = 0;
 	while (r < map->height)
 	{
+		if (!map->grid[r])
+			return (free_partial_grid(new_grid, r + 1), 0);
 		new_grid[r + 1] = make_inner_row(map->grid[r], map->width);
 		if (!new_grid[r + 1])
 			return (free_partial_grid(new_grid, r + 1), 0);

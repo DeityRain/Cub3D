@@ -55,7 +55,10 @@ typedef struct s_map
 	char		*so_path;
 	char		*we_path;
 	char		*ea_path;
+	char		*floor_tex_path;
+	char		*ceil_tex_path;
 	int			floor_rgb[3];
+	char		*base_dir;
 	int			ceil_rgb[3];
 	char		**grid;
 	int			height;
@@ -97,6 +100,8 @@ typedef struct s_data
 	void		*win_ptr;
 	t_img		img;
 	t_map		map;
+	 t_texture	floor_tex;
+	 t_texture	ceil_tex;
 	int			key_w;
 	int			key_a;
 	int			key_s;
@@ -202,6 +207,7 @@ int				is_wall_cell(t_data *data, int x, int y);
 
 int	load_one_texture(t_data *data, int index, char *path);
 int	load_wall_texture(t_data *data);
+int	load_all_textures(t_data *data);
 
 /* ************************************************************************** */
 /* Movement functions														  */

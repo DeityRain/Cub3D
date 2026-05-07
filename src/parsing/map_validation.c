@@ -109,10 +109,14 @@ int	validate_map_chars(t_map *map)
 	int	c;
 	int	players;
 
+	if (!map || !map->grid || map->height <= 0)
+		return (0);
 	r = 0;
 	players = 0;
 	while (r < map->height)
 	{
+		if (!map->grid[r])
+			return (0);
 		c = 0;
 		while (map->grid[r][c])
 		{

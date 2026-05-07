@@ -65,7 +65,7 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	ft_bzero(&data, sizeof(t_data));
-	if (!verifications(&data, av) || !load_wall_texture(&data))
+	if (!verifications(&data, av) || !load_all_textures(&data))
 	{
 		ft_putendl_fd("Error: failed to initialize game", 2);
 		return (1);
