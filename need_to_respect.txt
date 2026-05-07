@@ -44,21 +44,21 @@ If you want, I can guide you through just step 1 next: setting up cameraX and th
 
 =========================================
 
-1 - Then implement raycasting
+- Next logical step is to use the DDA hit result to draw the scene:
 
-cast one ray per screen column
-find wall hit
-draw wall slice
+    Compute the perpendicular wall distance
+    Convert that distance into wall slice height
+    Determine the exact wall hit position
+    Choose the texture side
+    Draw the vertical wall stripe column by column
 
-2 - After that
+- After that, the usual order is:
 
-player movement
-collision detection
-textures
-minimap if needed
+    floor and ceiling rendering
+    player movement / rotation
+    z-buffer if you have sprites
+    
+    So in practice: DDA gives the hit; the next step is wall projection and texture mapping.
 
-->
-I'll add a short tracked plan for the raycasting work, then implement DDA + wall-slice drawing in raycasting.c and compile to verify.
 
-Reviewed 3 files and implemented DDA for Raycasting
-Now I'll implement the DDA raycasting and wall-slice drawing inside render_raycasting in render.c.
+    PENSE A CHANGER LE COMPORTEMENT DES DEPLACEMENT < WASD TRANSLET, ARRAW turn

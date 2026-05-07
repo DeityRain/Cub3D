@@ -26,7 +26,13 @@ static void	init_map(t_map *map)
 	map->no_path = NULL;
 	map->so_path = NULL;
 	map->we_path = NULL;
-	map->ea_texture = NULL;
+	map->ea_path = NULL;
+	map->floor_rgb[0] = 211;
+	map->floor_rgb[1] = 211;
+	map->floor_rgb[2] = 211;
+	map->ceil_rgb[0] = 135;
+	map->ceil_rgb[1] = 206;
+	map->ceil_rgb[2] = 235;
 	map->grid = NULL;
 	map->height = 0;
 	map->width = 0;
@@ -127,8 +133,8 @@ void	free_map(t_map *map)
 		free(map->so_path);
 	if (map->we_path)
 		free(map->we_path);
-	if (map->ea_texture)
-		free(map->ea_texture);
+	if (map->ea_path)
+		free(map->ea_path);
 	if (map->grid)
 	{
 		i = 0;

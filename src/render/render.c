@@ -13,44 +13,15 @@
 #include "cub3d.h"
 
 /*
-** write_pixel_color: Writes color bytes to pixel memory using the image endian.
+** clamp_int: Keeps a value inside [min, max].
 */
-void	write_pixel_color(t_data *data, unsigned char *pixel, int color)
+int	clamp_int(int value, int min, int max)
 {
-	int				bytes_per_pixel;
-	unsigned int	col;
-	int				i;
-
-	bytes_per_pixel = data->img.bits_per_pixel / 8;
-	col = mlx_get_color_value(data->mlx_ptr, color);
-	i = 0;
-	if (data->img.endian == 0)
-	{
-		while (i < bytes_per_pixel)
-		{
-			pixel[i] = (col >> (8 * i)) & 0xFF;
-			i++;
-		}
-	}
-	else
-	{
-		while (i < bytes_per_pixel)
-		{
-			pixel[bytes_per_pixel - 1 - i] = (col >> (8 * i)) & 0xFF;
-			i++;
-		}
-	}
-}
-
-/*
-** render_image: Pushes the current image buffer to the MLX window.
-*/
-void	render_image(t_data *data)
-{
-	if (!data || !data->mlx_ptr || !data->win_ptr || !data->img.img_ptr)
-		return ;
-	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.img_ptr, 0,
-		0);
+	if (value < min)
+		return (min);
+	if (value > max)
+		return (max);
+	return (value);
 }
 
 /*
@@ -81,17 +52,19 @@ void	render_floor_and_ceiling(t_data *data)
 
 /*
 ** render_raycasting: Casts one ray per screen column.
+** 1e30 is a very large number i use it for representing the infinity
 */
 void	render_raycasting(t_data *data)
 {
 	int		x;
-	double	ray_dir_x;
-	double	ray_dir_y;
+	t_dda	dda;
 
 	x = 0;
 	while (x < WIN_WIDTH)
 	{
-		compute_ray_direction(data, x, &ray_dir_x, &ray_dir_y);
+		init_dda_for_ray(data, x, &dda);
+		perform_dda(data, &dda);
+		draw_wall_column(data, x, &dda);
 		x++;
 	}
 }
@@ -104,6 +77,7 @@ int	render_loop(void *param)
 	t_data	*data;
 
 	data = (t_data *)param;
+	process_input(data);
 	render_floor_and_ceiling(data);
 	render_raycasting(data);
 	render_image(data);

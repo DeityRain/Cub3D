@@ -13,22 +13,6 @@
 #include "cub3d.h"
 
 /*
-** Sets pixel at (x,y) in image buffer to given color.
-*/
-int	put_pixel(t_data *data, int x, int y, int color)
-{
-	unsigned char	*pixel;
-
-	if (!data || !data->img.addr)
-		return (0);
-	if (x < 0 || x >= WIN_WIDTH || y < 0 || y >= WIN_HEIGHT)
-		return (0);
-	pixel = get_pixel_ptr(data, x, y);
-	write_pixel_color(data, pixel, color);
-	return (1);
-}
-
-/*
 ** Calculates pointer to pixel data for (x,y) in image buffer.
 */
 unsigned char	*get_pixel_ptr(t_data *data, int x, int y)
@@ -54,6 +38,30 @@ void	fill_row(t_data *data, int y, int color)
 		put_pixel(data, x, y, color);
 		x++;
 	}
+}
+
+/*
+** get_wall_color: Returns a simple wall color and darkens Y-side hits.
+*/
+int	get_wall_color(t_dda *dda)
+{
+	int	color;
+
+	color = 0x777777;
+	if (dda && dda->side == 1)
+		color = 0x555555;
+	return (color);
+}
+
+/*
+** render_image: Pushes the current image buffer to the MLX window.
+*/
+void	render_image(t_data *data)
+{
+	if (!data || !data->mlx_ptr || !data->win_ptr || !data->img.img_ptr)
+		return ;
+	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.img_ptr, 0,
+		0);
 }
 
 /*

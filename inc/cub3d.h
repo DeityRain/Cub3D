@@ -41,6 +41,10 @@
 # define WIN_WIDTH 800
 # define WIN_HEIGHT 600
 
+// Movement speeds
+# define MOVE_SPEED 0.03
+# define ROT_SPEED 0.03
+
 /* ************************************************************************** */
 /* Structures																  */
 /* ************************************************************************** */
@@ -50,7 +54,7 @@ typedef struct s_map
 	char		*no_path;
 	char		*so_path;
 	char		*we_path;
-	char		*ea_texture;
+	char		*ea_path;
 	int			floor_rgb[3];
 	int			ceil_rgb[3];
 	char		**grid;
@@ -75,13 +79,34 @@ typedef struct s_img
 
 }				t_img;
 
+typedef struct s_texture
+{
+    void    *img_ptr;
+    char    *addr;
+    int     width;
+    int     height;
+    int     bits_per_pixel;
+    int     line_length;
+    int     endian;
+}   t_texture;
+
+/*0=NO, 1=SO, 2=WE, 3=EA*/
 typedef struct s_data
 {
 	void		*mlx_ptr;
 	void		*win_ptr;
 	t_img		img;
 	t_map		map;
-}				t_data;
+	int			key_w;
+	int			key_a;
+	int			key_s;
+	int			key_d;
+	int			key_up;
+	int			key_down;
+	int			key_left;
+	int			key_right;
+	t_texture	tex[4];
+}                t_data;
 
 typedef struct s_player
 {
@@ -93,12 +118,33 @@ typedef struct s_player
 	double		plane_y;
 }				t_player;
 
+typedef struct s_dda
+{
+	double		pos_x;
+	double		pos_y;
+	double		ray_dir_x;
+	double		ray_dir_y;
+	int			map_x;
+	int			map_y;
+	double		delta_dist_x;
+	double		delta_dist_y;
+	int			step_x;
+	int			step_y;
+	double		side_dist_x;
+	double		side_dist_y;
+	int			side;
+	double		perp_wall_dist;
+}				t_dda;
+
+
 /* ************************************************************************** */
 /* Events Functions														      */
 /* ************************************************************************** */
 
 int				close_window(t_data *data);
 int				handle_keypress(int keysym, t_data *data);
+int				handle_keyrelease(int keysym, t_data *data);
+void			process_input(t_data *data);
 
 /* ************************************************************************** */
 /* Parsing functions														  */
@@ -127,8 +173,11 @@ unsigned char	*get_pixel_ptr(t_data *data, int x, int y);
 int				put_pixel(t_data *data, int x, int y, int color);
 void			render_image(t_data *data);
 void			render_floor_and_ceiling(t_data *data);
+int				clamp_int(int value, int min, int max);
 void			write_pixel_color(t_data *data, unsigned char *pixel,
 					int color);
+void			draw_wall_column(t_data *data, int x, t_dda *dda);
+int				get_wall_color(t_dda *dda);
 void			render_raycasting(t_data *data);
 int				render_loop(void *param);
 void			fill_row(t_data *data, int y, int color);
@@ -140,5 +189,33 @@ int				rgb_to_int(int rgb[3]);
 
 void			compute_ray_direction(t_data *data, int x, double *ray_dir_x,
 					double *ray_dir_y);
+void			init_dda_for_ray(t_data *data, int x, t_dda *dda);
+double			compute_perp_wall_dist(t_dda *dda);
+int				perform_dda(t_data *data, t_dda *dda);
+double			get_dda_infinity(t_data *data);
+double			compute_perp_wall_dist(t_dda *dda);
+int				is_wall_cell(t_data *data, int x, int y);
+
+/* ************************************************************************** */
+/* texture_load functions													  */
+/* ************************************************************************** */
+
+int	load_one_texture(t_data *data, int index, char *path);
+int	load_wall_texture(t_data *data);
+
+/* ************************************************************************** */
+/* Movement functions														  */
+/* ************************************************************************** */
+
+int				can_move_to(t_map *map, double x, double y);
+void			move_player(t_map *map, int direction);
+void			strafe_player(t_map *map, int direction);
+void			rotate_player(t_map *map, double angle);
+void			set_key_state(t_data *data, int keysym, int pressed);
+void			process_input(t_data *data);
+int				handle_keypress(int keysym, t_data *data);
+int				handle_keyrelease(int keysym, t_data *data);
+int				setup_hooks(t_data *data);
+
 
 #endif

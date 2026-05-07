@@ -1,0 +1,99 @@
+implement DDA on render_raycasting.
+
+In the world of computer graphics—specifically raycasting (think Wolfenstein 3D style)
+—DDA stands for - Digital Differential Analyzer -.At its core, DDA is a fast algorithm used 
+to find which cells of a grid a line (or ray) passes through. Instead of moving the ray 
+forward by tiny, fixed increments and constantly checking "Am I hitting a wall yet?", 
+DDA "jumps" from one grid line to the next.Why use DDA?If you simply move a ray forward by 
+a small fixed distance (e.g., 0.1 units), you run into two problems:Inefficiency: If the step 
+is too small, you waste CPU cycles checking the same empty space over and over.
+Inaccuracy: If the step is too large, you might "teleport" right through a thin wall or a 
+corner without ever detecting the collision.DDA solves this by calculating exactly how far 
+the ray needs to travel to hit the very next vertical or horizontal grid line.
+
+How the Algorithm WorksThe algorithm essentially treats the grid like a checkerboard. 
+It keeps track of two main things:The distance to the next vertical grid line.The distance 
+to the next horizontal grid line.It then performs a simple "Who is closer?" check:If the 
+next vertical line is closer, it jumps there and checks that grid cell.If the next 
+horizontal line is closer, it jumps there instead.The Key VariablesTo make this happen, 
+DDA uses a bit of trigonometry (usually simplified into ratios):
+
+deltaDistX / deltaDistY: The distance the ray has to travel to go from one grid line to the next (e.g., from $x=1$ to $x=2$).
+
+Formula: $deltaDistX = |1 / rayDirX|$sideDistX / sideDistY: The distance from the ray’s current starting position 
+to the very first grid line it encounters.stepX / stepY: Whether the ray is moving left (-1) or right (+1), 
+and up (-1) or down (+1).The DDA LoopOnce the initial distances are set, the actual loop is incredibly 
+lightweight:Check: Is sideDistX < sideDistY?If yes: Increment sideDistX by deltaDistX, move one step in the X 
+direction on the map grid.If no: Increment sideDistY by deltaDistY, move one step in the Y direction on 
+the map grid.Hit Detection: Check if the new map coordinates contain a wall.Repeat until a wall is 
+found.The ResultBy the time the loop finishes, you know exactly which grid cell was hit and whether 
+it was a "side" hit (vertical wall) or a "top/bottom" hit (horizontal wall). 
+
+This allows you to calculate the perpendicular distance, which is what you use to determine how tall 
+to draw the wall on the user's screen.It’s an elegant, "old-school" bit of math that remains one 
+of the most efficient ways to handle 2.5D visibility.
+
+=================================================================================
+
+Concept: correct — DDA jumps between grid lines using sideDist vs deltaDist.
+
+Missing concrete formulas/initialization:
+
+mapX = (int)posX; mapY = (int)posY;
+deltaDistX = (rayDirX == 0) ? 1e30 : fabs(1.0 / rayDirX);
+deltaDistY = (rayDirY == 0) ? 1e30 : fabs(1.0 / rayDirY);
+
+- Determine step and initial sideDist:
+
+if rayDirX < 0: stepX = -1; sideDistX = (posX - mapX) * deltaDistX;
+else: stepX = +1; sideDistX = (mapX + 1.0 - posX) * deltaDistX;
+same for Y with stepY, sideDistY.
+
+- DDA loop (exact flow):
+
+while (!hit)
+if (sideDistX < sideDistY)
+sideDistX += deltaDistX;
+mapX += stepX;
+side = 0; // vertical side
+else
+sideDistY += deltaDistY;
+mapY += stepY;
+side = 1; // horizontal side
+if (map->grid[mapY][mapX] == '1') hit = 1;
+
+- Compute perpendicular distance (avoid fish-eye):
+
+if (side == 0)
+perpWallDist = (mapX - posX + (1 - stepX) / 2) / rayDirX;
+else
+perpWallDist = (mapY - posY + (1 - stepY) / 2) / rayDirY;
+
+- Compute vertical stripe to draw:
+
+lineHeight = (int)(WIN_HEIGHT / perpWallDist);
+drawStart = -lineHeight / 2 + WIN_HEIGHT / 2; clamp to 0
+drawEnd = lineHeight / 2 + WIN_HEIGHT / 2; clamp to WIN_HEIGHT-1
+choose color, darken if side == 1 to give shading
+draw vertical pixels from drawStart to drawEnd at column x
+Edge cases:
+handle rayDirX or rayDirY == 0 (use large deltaDist above).
+ensure mapX/mapY indices are in bounds before accessing grid.
+Integration notes for your codebase:
+Use player pos from data->map.player_x / player_y.
+Use compute_ray_direction() as you already have to get rayDirX/Y.
+
+- Replace the empty loop in render_raycasting with the full per-column DDA steps above.
+
+Debug tips:
+
+Temporarily color entire column by side and by lineHeight to verify distances.
+Print perpWallDist for a few columns to ensure values change smoothly.
+Test with simple maps (one box around player) to validate hits.
+
+Optional next steps (if you want):
+
+Add texture mapping: compute wallX and use texX/texY sampling.
+Draw a 2D minimap overlay of the ray path for debugging.
+
+=================================================================================

@@ -2,8 +2,8 @@ NO ./path_to_north.xpm
 SO ./path_to_south.xpm
 WE ./path_to_west.xpm
 EA ./path_to_east.xpm
-F 220,100,0
-C 225,30,0
+F 211,211,211
+C 135,206,235
 
 111111
 100101

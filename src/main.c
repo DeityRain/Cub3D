@@ -28,26 +28,6 @@ int	close_window(t_data *data)
 }
 
 /*
-** handle_keypress: Processes keyboard input events.
-*/
-int	handle_keypress(int keysym, t_data *data)
-{
-	if (keysym == ESC_KEY)
-		close_window(data);
-	return (0);
-}
-
-/*
-** setup_hooks: Attaches keyboard and close event handlers.
-*/
-static int	setup_hooks(t_data *data)
-{
-	mlx_key_hook(data->win_ptr, handle_keypress, data);
-	mlx_hook(data->win_ptr, 17, 0, close_window, data);
-	return (1);
-}
-
-/*
 ** verifications: Validates file, parses map, and initializes MLX/image.
 */
 static int	verifications(t_data *data, char **av)
@@ -85,7 +65,7 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	ft_bzero(&data, sizeof(t_data));
-	if (!verifications(&data, av))
+	if (!verifications(&data, av) || !load_wall_texture(&data))
 	{
 		ft_putendl_fd("Error: failed to initialize game", 2);
 		return (1);

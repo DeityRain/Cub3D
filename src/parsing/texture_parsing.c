@@ -82,10 +82,10 @@ int	parse_we_texture(t_map *map, const char *line, int *parsed)
 */
 int	parse_ea_texture(t_map *map, const char *line, int *parsed)
 {
-	if (map->ea_texture)
+	if (map->ea_path)
 		return (0);
-	map->ea_texture = get_value_after_key(line, 2);
-	if (!map->ea_texture)
+	map->ea_path = get_value_after_key(line, 2);
+	if (!map->ea_path)
 		return (0);
 	(*parsed)++;
 	return (1);
