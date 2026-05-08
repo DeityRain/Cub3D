@@ -33,6 +33,8 @@ void	set_key_state(t_data *data, int keysym, int pressed)
 		data->key_left = pressed;
 	else if (keysym == RIGHT_KEY)
 		data->key_right = pressed;
+	else if (keysym == LCTRL_KEY)
+		data->key_ctrl = pressed;
 }
 
 /*
@@ -41,14 +43,20 @@ void	set_key_state(t_data *data, int keysym, int pressed)
 void	process_input(t_data *data)
 {
 
-	if (data->key_up || data->key_w)
+	if (data->key_w)
 		move_player(&data->map, 1);
-	if (data->key_down || data->key_s)
+	if (data->key_s)
 		move_player(&data->map, -1);
 	if (data->key_a)
-		rotate_player(&data->map, -ROT_SPEED);
+		strafe_player(&data->map, -1);
 	if (data->key_d)
-		rotate_player(&data->map, ROT_SPEED);
+		strafe_player(&data->map, 1);
+	if (data->key_up)
+		data->pitch_offset = clamp_int(data->pitch_offset + PITCH_SPEED,
+			-WIN_HEIGHT / 2, WIN_HEIGHT / 2);
+	if (data->key_down)
+		data->pitch_offset = clamp_int(data->pitch_offset - PITCH_SPEED,
+			-WIN_HEIGHT / 2, WIN_HEIGHT / 2);
 	if (data->key_left)
 		rotate_player(&data->map, -ROT_SPEED);
 	if (data->key_right)
@@ -56,32 +64,87 @@ void	process_input(t_data *data)
 }
 
 /*
-** handle_keypress: Sets key state when a key is pressed.
+** Sets mouse state when mouse is moved.
+*/
+int	handle_mouse_move(int x, int y, t_data *data)
+{
+	int	delta_x;
+	int	delta_y;
+
+	(void)y;
+
+	if (!data->mouse_captured)
+		return (0);
+	if (!data->mouse_initialized)
+	{
+		data->mouse_initialized = 1;
+		return (0);
+	}
+	delta_x = x - WIN_WIDTH / 2;
+	delta_y = y - WIN_HEIGHT / 2;
+	if (delta_x != 0)
+	{
+		double angle = delta_x * MOUSE_ROT_SPEED;
+
+		rotate_player(&data->map, angle);
+	}
+	if (delta_y != 0)
+	{
+		data->pitch_offset = clamp_int(data->pitch_offset - delta_y * MOUSE_PITCH_SPEED,
+			-WIN_HEIGHT / 2, WIN_HEIGHT / 2);
+	}
+	mlx_mouse_move(data->mlx_ptr, data->win_ptr,
+		WIN_WIDTH / 2, WIN_HEIGHT / 2);
+	return (0);
+}
+
+
+/*
+** Sets key state when a key is pressed.
 */
 int	handle_keypress(int keysym, t_data *data)
 {
 	if (keysym == ESC_KEY)
 		close_window(data);
+	if (keysym == LCTRL_KEY)
+	{
+		data->mouse_captured = 0;
+		mlx_mouse_show(data->mlx_ptr, data->win_ptr);
+	}
 	set_key_state(data, keysym, 1);
 	return (0);
 }
 
 /*
-** handle_keyrelease: Clears key state when a key is released.
+** Clears key state when a key is released.
 */
 int	handle_keyrelease(int keysym, t_data *data)
 {
+	if (keysym == LCTRL_KEY)
+	{
+		data->mouse_captured = 1;
+		data->mouse_initialized = 0;
+		mlx_mouse_hide(data->mlx_ptr, data->win_ptr);
+		mlx_mouse_move(data->mlx_ptr, data->win_ptr,
+			WIN_WIDTH / 2, WIN_HEIGHT / 2);
+	}
 	set_key_state(data, keysym, 0);
 	return (0);
 }
 
 /*
-** setup_hooks: Attaches keyboard and close event handlers.
+** Attaches keyboard and close event handlers.
 */
 int	setup_hooks(t_data *data)
 {
 	mlx_hook(data->win_ptr, 2, 1L << 0, handle_keypress, data);
 	mlx_hook(data->win_ptr, 3, 1L << 1, handle_keyrelease, data);
+	mlx_hook(data->win_ptr, 6, 1L << 6, handle_mouse_move, data);
 	mlx_hook(data->win_ptr, 17, 0, close_window, data);
+	data->mouse_captured = 1;
+	mlx_mouse_move(data->mlx_ptr, data->win_ptr, WIN_WIDTH / 2,
+		WIN_HEIGHT / 2);
+	mlx_mouse_hide(data->mlx_ptr, data->win_ptr);
+
 	return (1);
 }

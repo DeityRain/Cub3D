@@ -83,8 +83,8 @@ void	draw_wall_column(t_data *data, int x, t_dda *dda)
 	line_height = (int)(WIN_HEIGHT / dda->perp_wall_dist);
 	if (line_height <= 0)
 		line_height = 1;
-	draw_start = (WIN_HEIGHT - line_height) / 2;
-	draw_end = (WIN_HEIGHT + line_height) / 2;
+	draw_start = (WIN_HEIGHT - line_height) / 2 + data->pitch_offset;
+	draw_end = (WIN_HEIGHT + line_height) / 2 + data->pitch_offset;
 	draw_start = clamp_int(draw_start, 0, WIN_HEIGHT - 1);
 	draw_end = clamp_int(draw_end, 0, WIN_HEIGHT - 1);
 	/* textured walls */
@@ -142,8 +142,9 @@ void	draw_wall_column(t_data *data, int x, t_dda *dda)
 	if (dda->side == 1 && dda->ray_dir_y < 0)
 		tex_x = tex->width - tex_x - 1;
 
+	double center = WIN_HEIGHT / 2.0 + data->pitch_offset;
 	double step = 1.0 * tex->height / (double)line_height;
-	double tex_pos = (draw_start - (WIN_HEIGHT / 2.0) + (line_height / 2.0)) * step;
+	double tex_pos = (draw_start - center + (line_height / 2.0)) * step;
 
 	y = draw_start;
 	while (y <= draw_end)

@@ -24,6 +24,7 @@
 
 // Linux Keycodes
 # define ESC_KEY 65307
+# define LCTRL_KEY 65507
 
 // Arrow keys (X11 keysyms)
 # define LEFT_KEY 65361
@@ -42,8 +43,13 @@
 # define WIN_HEIGHT 600
 
 // Movement speeds
-# define MOVE_SPEED 0.03
-# define ROT_SPEED 0.03
+# define MOVE_SPEED 0.025
+# define ROT_SPEED 0.02
+# define MOUSE_ROT_SPEED 0.0003
+//mouse vertical look
+# define MOUSE_PITCH_SPEED 0.3
+//Keyboard vertical look
+# define PITCH_SPEED 7
 
 /* ************************************************************************** */
 /* Structures																  */
@@ -58,8 +64,8 @@ typedef struct s_map
 	char		*floor_tex_path;
 	char		*ceil_tex_path;
 	int			floor_rgb[3];
-	char		*base_dir;
 	int			ceil_rgb[3];
+	char		*base_dir;
 	char		**grid;
 	int			height;
 	int			width;
@@ -84,13 +90,13 @@ typedef struct s_img
 
 typedef struct s_texture
 {
-    void    *img_ptr;
-    char    *addr;
-    int     width;
-    int     height;
-    int     bits_per_pixel;
-    int     line_length;
-    int     endian;
+    void    	*img_ptr;
+    char    	*addr;
+    int     	width;
+    int     	height;
+    int     	bits_per_pixel;
+    int     	line_length;
+    int     	endian;
 }   t_texture;
 
 /*0=NO, 1=SO, 2=WE, 3=EA*/
@@ -100,8 +106,8 @@ typedef struct s_data
 	void		*win_ptr;
 	t_img		img;
 	t_map		map;
-	 t_texture	floor_tex;
-	 t_texture	ceil_tex;
+	t_texture	floor_tex;
+	t_texture	ceil_tex;
 	int			key_w;
 	int			key_a;
 	int			key_s;
@@ -110,6 +116,11 @@ typedef struct s_data
 	int			key_down;
 	int			key_left;
 	int			key_right;
+	int			key_ctrl;
+	int			mouse_captured;
+	int			mouse_initialized;
+	int			previous_mouse_posX;
+	int			pitch_offset;
 	t_texture	tex[4];
 }                t_data;
 
@@ -149,6 +160,7 @@ typedef struct s_dda
 int				close_window(t_data *data);
 int				handle_keypress(int keysym, t_data *data);
 int				handle_keyrelease(int keysym, t_data *data);
+int				handle_mouse_move(int x, int y, t_data *data);
 void			process_input(t_data *data);
 
 /* ************************************************************************** */
@@ -205,9 +217,9 @@ int				is_wall_cell(t_data *data, int x, int y);
 /* texture_load functions													  */
 /* ************************************************************************** */
 
-int	load_one_texture(t_data *data, int index, char *path);
-int	load_wall_texture(t_data *data);
-int	load_all_textures(t_data *data);
+int				load_one_texture(t_data *data, int index, char *path);
+int				load_wall_texture(t_data *data);
+int				load_all_textures(t_data *data);
 
 /* ************************************************************************** */
 /* Movement functions														  */
