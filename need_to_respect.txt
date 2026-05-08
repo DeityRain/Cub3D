@@ -47,3 +47,5 @@ If you want, I can guide you through just step 1 next: setting up cameraX and th
 penser a verifier les texture (savoir si elle passe ou pas, trop petit ect ect)
 
 snprintf(full_path, sizeof(full_path), "%s/%s", cwd, path); not allowed
+
+make -j$(nproc) && ./cub3D "./maps/large_test_map.cub" 
