@@ -45,13 +45,6 @@ static int	verifications(t_data *data, char **av)
 		free_map(&data->map);
 		return (0);
 	}
-	if (!setup_hooks(data))
-	{
-		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-		free(data->mlx_ptr);
-		free_map(&data->map);
-		return (0);
-	}
 	return (1);
 }
 
@@ -69,6 +62,19 @@ int	main(int ac, char **av)
 	{
 		ft_putendl_fd("Error: failed to initialize game", 2);
 		return (1);
+	}
+	data.win_ptr = mlx_new_window(data.mlx_ptr, WIN_WIDTH, WIN_HEIGHT,"cub3D");
+	if (!data.win_ptr)
+	{
+		ft_putendl_fd("Error: failed to create window", 2);
+		return (0);
+	}
+	if (!setup_hooks(&data))
+	{
+		mlx_destroy_window(data.mlx_ptr, data.win_ptr);
+		free(data.mlx_ptr);
+		free_map(&data.map);
+		return (0);
 	}
 	mlx_loop_hook(data.mlx_ptr, render_loop, &data);
 	mlx_loop(data.mlx_ptr);

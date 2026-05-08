@@ -43,7 +43,7 @@
 # define WIN_HEIGHT 600
 
 // Movement speeds
-# define MOVE_SPEED 0.025
+# define MOVE_SPEED 0.026
 # define ROT_SPEED 0.02
 # define MOUSE_ROT_SPEED 0.0003
 //mouse vertical look

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include <sys/time.h>
 
 static void	copy_tex_pixel_to_screen(t_data *data, int x, int y,
 		t_texture *tex, int tx, int ty)
@@ -141,6 +142,18 @@ void	draw_wall_column(t_data *data, int x, t_dda *dda)
 		tex_x = tex->width - tex_x - 1;
 	if (dda->side == 1 && dda->ray_dir_y < 0)
 		tex_x = tex->width - tex_x - 1;
+
+	struct timeval current_time;
+	gettimeofday(&current_time, NULL);
+	int direction = current_time.tv_usec % 3;
+	if (direction == 0)
+		tex_x += 0.3;
+	else if (direction == 1)
+		tex_x -= 0.3;
+	if (tex_x < 0)
+		tex_x = 0;
+	if (tex_x >= (int)tex->width)
+		tex_x = tex->width - 0.3;
 
 	double center = WIN_HEIGHT / 2.0 + data->pitch_offset;
 	double step = 1.0 * tex->height / (double)line_height;

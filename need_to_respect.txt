@@ -44,21 +44,6 @@ If you want, I can guide you through just step 1 next: setting up cameraX and th
 
 =========================================
 
-- Next logical step is to use the DDA hit result to draw the scene:
+penser a verifier les texture (savoir si elle passe ou pas, trop petit ect ect)
 
-    Compute the perpendicular wall distance
-    Convert that distance into wall slice height
-    Determine the exact wall hit position
-    Choose the texture side
-    Draw the vertical wall stripe column by column
-
-- After that, the usual order is:
-
-    floor and ceiling rendering
-    player movement / rotation
-    z-buffer if you have sprites
-    
-    So in practice: DDA gives the hit; the next step is wall projection and texture mapping.
-
-
-    PENSE A CHANGER LE COMPORTEMENT DES DEPLACEMENT < WASD TRANSLET, ARRAW turn
+snprintf(full_path, sizeof(full_path), "%s/%s", cwd, path); not allowed
