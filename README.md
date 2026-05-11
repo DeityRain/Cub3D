@@ -4,7 +4,7 @@ This project has been created as part of the 42 curriculum by qdeffaux.
 
 This project is a 3D game engine built from scratch using the **Raycasting** technique, inspired by the world-famous 90's game *Wolfenstein 3D*. It explores the concepts of basic computer graphics, coordinate geometry, and the MiniLibX library.
 
-## 📖 Description
+## Description
 
 The goal of `cub3D` is to create a dynamic 3D perspective inside a maze using a 2D map. By utilizing the **DDA (Digital Differential Analyzer)** algorithm, the engine calculates the distance between the player and the walls in real-time, rendering a three-dimensional view with wall textures, floor/ceiling colors, and smooth movement logic.
 
@@ -15,7 +15,7 @@ The goal of `cub3D` is to create a dynamic 3D perspective inside a maze using a 
 - **Smooth Controls**: Multi-key management for simultaneous rotation and movement.
 - **Zero-Leak Policy**: 100% leak-free implementation, verified and audited with Valgrind.
 
-## 🛠️ Instructions
+## Instructions
 
 ### Compilation
 The project uses a `Makefile` to compile both the `libft` and the `mlx` library along with the main source files.
@@ -44,13 +44,13 @@ To run the game, provide a valid `.cub` map file as an argument:
 | **ESC** | Safely Close Game (Cleanup and Exit) |
 | **Window [X]** | Close Game |
 
-## 🗺️ Map Format
+## Map Format
 The engine requires a `.cub` file containing:
 - **Texture Paths**: `NO`, `SO`, `WE`, `EA` followed by paths to `.xpm` textures.
 - **Colors**: `F` (Floor) and `C` (Ceiling) followed by RGB values (e.g., `220,100,0`).
 - **The Map**: Composed of `1` (Wall), `0` (Empty), and `N/S/E/W` (Player Start Position).
 
-## 🧪 Technical Implementation & Memory Safety
+## Technical Implementation & Memory Safety
 
 One of the highlights of this implementation is the **perfect memory score**. Even in cases of invalid maps or interrupted execution, the program ensures all heap-allocated memory is reclaimed.
 
@@ -60,7 +60,7 @@ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressi
 ```
 **Result:** `Definitely lost: 0 bytes in 0 blocks` | `ERROR SUMMARY: 0 errors from 0 contexts`.
 
-## 📚 Resources
+## Resources
 
 ### Documentation & Tutorials
 - [Lode's Raycasting Tutorial](https://lodev.org/cgtutor/raycasting.html): The primary resource for understanding DDA logic.
