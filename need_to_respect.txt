@@ -1,3 +1,7 @@
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=mlx.supp
+
+
+
 I dont have the right too use mlx_pixel_put (like you did on FDF) because its way too slow for that project.
 
 You gonna have too use an Image Buffer.

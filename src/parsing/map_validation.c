@@ -73,7 +73,12 @@ char	**collect_map_lines(char **lines, int start, int height, int *width)
 	{
 		grid[r] = strip_line(lines[start + r]);
 		if (!grid[r])
-			return (free(grid), NULL);
+		{
+			while(r > 0)
+				free(grid[--r]);
+			free(grid);
+			return (NULL);
+		}
 		if ((int)ft_strlen(grid[r]) > *width)
 			*width = ft_strlen(grid[r]);
 		r++;

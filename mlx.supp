@@ -1,0 +1,39 @@
+{
+   mlx_writev_uninit_padding
+   Memcheck:Param
+   writev(vector[0])
+   fun:writev
+   ...
+}
+
+{
+   x11_reachable_blocks
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libX11.so.*
+}
+
+{
+   mlx_reachable_blocks
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:mlx_init
+}
+
+{
+   mlx_new_window_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:mlx_new_window
+}
+
+{
+   ld_reachable_blocks
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dl_open
+}

@@ -29,13 +29,13 @@ int	close_window(t_data *data)
 static int	verifications(t_data *data, char **av)
 {
 	if (!validate_file(av[1]))
-		return (destroy_game(data), 0);
+		return (0);
 	if (!parse_cub_file(av[1], &data->map))
-		return (destroy_game(data), 0);
+		return (0);
 	if (!init_mlx(data))
-		return (destroy_game(data), 0);
+		return (0);
 	if (!init_image(data))
-		return (destroy_game(data), 0);
+		return (0);
 	return (1);
 }
 

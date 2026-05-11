@@ -39,7 +39,7 @@ static int	load_and_setup_map(const char *filename, t_map *map,
 	if (!parse_header(lines, count, &i, map))
 		return (free_lines_array(lines, count), 0);
 	if (!find_map_bounds(lines, count, start, end))
-		return (free_lines_array(lines, count), 0);
+		return (free_lines_array(lines, count), free_map(map), 0);
 	h = *end - i + 1;
 	map->grid = collect_map_lines(lines, i, h, &map->width);
 	if (!map->grid)
