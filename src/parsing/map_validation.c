@@ -74,7 +74,7 @@ char	**collect_map_lines(char **lines, int start, int height, int *width)
 		grid[r] = strip_line(lines[start + r]);
 		if (!grid[r])
 		{
-			while(r > 0)
+			while (r > 0)
 				free(grid[--r]);
 			free(grid);
 			return (NULL);

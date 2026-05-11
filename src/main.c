@@ -18,6 +18,7 @@
 int	close_window(t_data *data)
 {
 	ft_putendl_fd("Closing game...", 1);
+	mouse_release(data);
 	destroy_game(data);
 	exit(0);
 	return (0);

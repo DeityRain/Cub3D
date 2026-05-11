@@ -6,7 +6,7 @@
 /*   By: qdeffaux <qdeffaux@student.42luxembourg.lu> +#+  +:+       +#+       */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 11:40:00 by qdeffaux          #+#    #+#             */
-/*   Updated: 2026/05/11 14:16:22 by deityrain        ###   ########.fr       */
+/*   Updated: 2026/05/11 19:45:40 by qdeffaux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,19 @@
 // Window Dimensions
 // nice on 1024 x 768
 // use 800 x 600 for performance
-# define WIN_WIDTH 800
-# define WIN_HEIGHT 600
+# define WIN_WIDTH 1024
+# define WIN_HEIGHT 768
 
 // Movement speeds
 # define MOVE_SPEED 0.08
-# define ROT_SPEED 0.02
+# define ROT_SPEED 0.10
 # define MOUSE_ROT_SPEED 0.0001
 // Mouse vertical look
 # define MOUSE_PITCH_SPEED 0.05
 // keep player away from walls
 # define COLLISION_BUFFER 0.2
 // Keyboard vertical look
-# define PITCH_SPEED 7
+# define PITCH_SPEED 40
 
 /* ************************************************************************** */
 /* Structures																  */
@@ -280,6 +280,11 @@ void			rotate_player(t_map *map, double angle);
 void			set_key_state(t_data *data, int keysym, int pressed);
 void			process_input(t_data *data);
 void				handle_mouse_delta(t_data *data, int delta_x, int delta_y);
+int				mouse_init_center(t_data *data);
+void			mouse_clamp_pos(int pos[2], int x, int y);
+int				mouse_capture(t_data *data);
+void			mouse_release(t_data *data);
+int				handle_mouse_leave(int x, int y, t_data *data);
 int				handle_keypress(int keysym, t_data *data);
 int				handle_keyrelease(int keysym, t_data *data);
 int				setup_hooks(t_data *data);
