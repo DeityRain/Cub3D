@@ -94,14 +94,14 @@ typedef struct s_img
 
 typedef struct s_texture
 {
-    void    	*img_ptr;
-    char    	*addr;
-    int     	width;
-    int     	height;
-    int     	bits_per_pixel;
-    int     	line_length;
-    int     	endian;
-}   t_texture;
+	void		*img_ptr;
+	char		*addr;
+	int			width;
+	int			height;
+	int			bits_per_pixel;
+	int			line_length;
+	int			endian;
+}				t_texture;
 
 /*0=NO, 1=SO, 2=WE, 3=EA*/
 typedef struct s_data
@@ -123,10 +123,9 @@ typedef struct s_data
 	int			key_ctrl;
 	int			mouse_captured;
 	int			mouse_initialized;
-	int			previous_mouse_posX;
 	int			pitch_offset;
 	t_texture	tex[4];
-}                t_data;
+}				t_data;
 
 typedef struct s_player
 {
@@ -163,7 +162,7 @@ typedef struct s_texloop
 	int			tex_x;
 	double		step;
 	double		tex_pos;
-}   			t_texloop;
+}				t_texloop;
 
 typedef struct s_fc_rays
 {
@@ -193,9 +192,8 @@ typedef struct s_fc_row
 	t_texture	*tex;
 }				t_fc_row;
 
-
 /* ************************************************************************** */
-/* Events Functions														      */
+/* Events Functions															  */
 /* ************************************************************************** */
 
 int				close_window(t_data *data);
@@ -230,7 +228,7 @@ void			destroy_images(t_data *data);
 void			destroy_game(t_data *data);
 
 /* ************************************************************************** */
-/* Render functions															  */
+/* Render functions														      */
 /* ************************************************************************** */
 
 unsigned char	*get_pixel_ptr(t_data *data, int x, int y);
@@ -246,7 +244,7 @@ void			render_raycasting(t_data *data);
 int				render_loop(void *param);
 void			fill_row(t_data *data, int y, int color);
 int				rgb_to_int(int rgb[3]);
-void				render_floor_ceiling_textured(t_data *data, int center);
+void			render_floor_ceiling_textured(t_data *data, int center);
 
 /* ************************************************************************** */
 /* Raycasting functions														  */
@@ -258,7 +256,6 @@ void			init_dda_for_ray(t_data *data, int x, t_dda *dda);
 double			compute_perp_wall_dist(t_dda *dda);
 int				perform_dda(t_data *data, t_dda *dda);
 double			get_dda_infinity(t_data *data);
-double			compute_perp_wall_dist(t_dda *dda);
 int				is_wall_cell(t_data *data, int x, int y);
 
 /* ************************************************************************** */
@@ -279,14 +276,12 @@ void			strafe_player(t_map *map, int direction);
 void			rotate_player(t_map *map, double angle);
 void			set_key_state(t_data *data, int keysym, int pressed);
 void			process_input(t_data *data);
-void				handle_mouse_delta(t_data *data, int delta_x, int delta_y);
+void			handle_mouse_delta(t_data *data, int delta_x, int delta_y);
 int				mouse_init_center(t_data *data);
 void			mouse_clamp_pos(int pos[2], int x, int y);
 int				mouse_capture(t_data *data);
 void			mouse_release(t_data *data);
 int				handle_mouse_leave(int x, int y, t_data *data);
-int				handle_keypress(int keysym, t_data *data);
-int				handle_keyrelease(int keysym, t_data *data);
 int				setup_hooks(t_data *data);
 
 /* extraction helpers */
