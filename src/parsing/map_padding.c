@@ -13,16 +13,6 @@
 #include "cub3d.h"
 
 /*
-** free_partial_grid: Frees allocated rows in temporary padded grid.
-*/
-static void	free_partial_grid(char **grid, int count)
-{
-	while (count > 0)
-		free(grid[--count]);
-	free(grid);
-}
-
-/*
 ** make_wall_row: Creates one full wall row filled with '1'.
 */
 static char	*make_wall_row(int width)
@@ -75,21 +65,13 @@ static void	set_padded_map(t_map *map, char **new_grid)
 }
 
 /*
-** pad_map_grid: Builds a new map grid padded by wall border.
+** build_padded_inner_rows: Fills new_grid with inner rows and final wall row.
+** Returns 1 on success, 0 on failure (and frees partial allocation).
 */
-int	pad_map_grid(t_map *map)
+static int	build_padded_inner_rows(t_map *map, char **new_grid)
 {
-	char	**new_grid;
-	int		r;
+	int	r;
 
-	if (!map || !map->grid || map->height <= 0 || map->width <= 0)
-		return (0);
-	new_grid = malloc(sizeof(char *) * (map->height + 3));
-	if (!new_grid)
-		return (0);
-	new_grid[0] = make_wall_row(map->width + 2);
-	if (!new_grid[0])
-		return (free(new_grid), 0);
 	r = 0;
 	while (r < map->height)
 	{
@@ -104,6 +86,26 @@ int	pad_map_grid(t_map *map)
 	if (!new_grid[r + 1])
 		return (free_partial_grid(new_grid, r + 1), 0);
 	new_grid[r + 2] = NULL;
+	return (1);
+}
+
+/*
+** pad_map_grid: Builds a new map grid padded by wall border.
+*/
+int	pad_map_grid(t_map *map)
+{
+	char	**new_grid;
+
+	if (!map || !map->grid || map->height <= 0 || map->width <= 0)
+		return (0);
+	new_grid = malloc(sizeof(char *) * (map->height + 3));
+	if (!new_grid)
+		return (0);
+	new_grid[0] = make_wall_row(map->width + 2);
+	if (!new_grid[0])
+		return (free(new_grid), 0);
+	if (!build_padded_inner_rows(map, new_grid))
+		return (0);
 	set_padded_map(map, new_grid);
 	return (1);
 }

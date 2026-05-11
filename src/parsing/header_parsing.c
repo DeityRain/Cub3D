@@ -50,14 +50,14 @@ int	parse_header_line(t_map *map, const char *line, int *parsed)
 }
 
 /*
-** parse_header: Processes header section until 6 tokens or map found.
+** parse_header: Processes header section until 8 tokens or map found.
 */
 int	parse_header(char **lines, int count, int *idx, t_map *map)
 {
 	int	parsed;
 
 	parsed = 0;
-	while (*idx < count && parsed < 6)
+	while (*idx < count && parsed < 8)
 	{
 		if (!is_line_empty(lines[*idx]))
 		{

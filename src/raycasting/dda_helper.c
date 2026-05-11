@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   dda_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qdeffaux <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: qdeffaux <qdeffaux@student.42luxembourg.lu> +#+  +:+       +#+       */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:10:56 by qdeffaux          #+#    #+#             */
 /*   Updated: 2026/05/07 14:10:57 by qdeffaux         ###   ########.fr       */

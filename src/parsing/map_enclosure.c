@@ -84,28 +84,23 @@ static int	flood_fill_ok(char **grid, int r, int c)
 int	check_map_enclosed(t_map *map)
 {
 	char	**copy;
-	int		row;
-	int		col;
+	int		r;
+	int		c;
 
 	if (!map || !map->grid || map->height <= 0)
 		return (0);
 	copy = copy_grid(map);
 	if (!copy)
 		return (0);
-	row = 0;
-	while (row < map->height)
+	r = 0;
+	while (r < map->height)
 	{
-		col = 0;
-		while (copy[row][col])
-		{
-			if (is_walkable(copy[row][col]))
-			{
-				if (!flood_fill_ok(copy, row, col))
-					return (free_grid_copy(copy, map->height), 0);
-			}
-			col++;
-		}
-		row++;
+		c = 0;
+		while (copy[r][c] && !is_walkable(copy[r][c]))
+			c++;
+		if (copy[r][c] && !flood_fill_ok(copy, r, c))
+			return (free_grid_copy(copy, map->height), 0);
+		r++;
 	}
 	free_grid_copy(copy, map->height);
 	return (1);

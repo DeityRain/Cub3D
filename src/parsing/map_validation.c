@@ -57,23 +57,6 @@ int	is_map_line(const char *s)
 }
 
 /*
-** strip_line: Removes trailing newlines from duplicated string.
-*/
-static char	*strip_line(const char *s)
-{
-	char	*dup;
-	int		len;
-
-	dup = ft_strdup(s);
-	if (!dup)
-		return (NULL);
-	len = ft_strlen(dup);
-	while (len > 0 && (dup[len - 1] == '\n' || dup[len - 1] == '\r'))
-		dup[--len] = '\0';
-	return (dup);
-}
-
-/*
 ** collect_map_lines: Allocates and copies map lines into grid array.
 */
 char	**collect_map_lines(char **lines, int start, int height, int *width)
@@ -102,7 +85,6 @@ char	**collect_map_lines(char **lines, int start, int height, int *width)
 /*
 ** validate_map_chars: Checks map contains only valid characters.
 */
-
 int	validate_map_chars(t_map *map)
 {
 	int	r;
@@ -120,13 +102,9 @@ int	validate_map_chars(t_map *map)
 		c = 0;
 		while (map->grid[r][c])
 		{
-			if (!(map->grid[r][c] == '0' || map->grid[r][c] == '1'
-				|| map->grid[r][c] == ' ' || map->grid[r][c] == 'N'
-				|| map->grid[r][c] == 'S' || map->grid[r][c] == 'E'
-				|| map->grid[r][c] == 'W'))
+			if (!is_valid_map_char(map->grid[r][c]))
 				return (0);
-			if (map->grid[r][c] == 'N' || map->grid[r][c] == 'S'
-				|| map->grid[r][c] == 'E' || map->grid[r][c] == 'W')
+			if (is_player_char(map->grid[r][c]))
 				players++;
 			c++;
 		}

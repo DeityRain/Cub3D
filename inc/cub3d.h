@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3d.h                                             :+:      :+:    :+:  */
+/*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qdeffaux <qdeffaux@student.42luxembourg.lu> +#+  +:+       +#+       */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 11:40:00 by qdeffaux          #+#    #+#             */
-/*   Updated: 2026/05/06 16:10:00 by qdeffaux         ###   ########.fr       */
+/*   Updated: 2026/05/11 14:16:22 by deityrain        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,20 @@
 # define D_KEY 100
 
 // Window Dimensions
+// nice on 1024 x 768
+// use 800 x 600 for performance
 # define WIN_WIDTH 800
 # define WIN_HEIGHT 600
 
 // Movement speeds
-# define MOVE_SPEED 0.026
+# define MOVE_SPEED 0.08
 # define ROT_SPEED 0.02
-# define MOUSE_ROT_SPEED 0.0003
-//mouse vertical look
-# define MOUSE_PITCH_SPEED 0.3
-//Keyboard vertical look
+# define MOUSE_ROT_SPEED 0.0001
+// Mouse vertical look
+# define MOUSE_PITCH_SPEED 0.05
+// keep player away from walls
+# define COLLISION_BUFFER 0.2
+// Keyboard vertical look
 # define PITCH_SPEED 7
 
 /* ************************************************************************** */
@@ -152,6 +156,43 @@ typedef struct s_dda
 	double		perp_wall_dist;
 }				t_dda;
 
+typedef struct s_texloop
+{
+	int			y;
+	int			end;
+	int			tex_x;
+	double		step;
+	double		tex_pos;
+}   			t_texloop;
+
+typedef struct s_fc_rays
+{
+	double		x0;
+	double		y0;
+	double		x1;
+	double		y1;
+}				t_fc_rays;
+
+typedef struct s_fc_state
+{
+	t_data		*data;
+	int			center;
+	int			ceil_col;
+	int			floor_col;
+	t_fc_rays	rays;
+}				t_fc_state;
+
+typedef struct s_fc_row
+{
+	int			y;
+	double		row_dist;
+	double		step_x;
+	double		step_y;
+	double		tex_x;
+	double		tex_y;
+	t_texture	*tex;
+}				t_fc_row;
+
 
 /* ************************************************************************** */
 /* Events Functions														      */
@@ -173,6 +214,9 @@ int				parse_cub_file(const char *filename, t_map *map);
 int				pad_map_grid(t_map *map);
 int				extract_player_data(t_map *map);
 int				check_map_enclosed(t_map *map);
+int				parse_floor_texture(t_map *map, const char *line, int *parsed);
+int				parse_ceil_texture(t_map *map, const char *line, int *parsed);
+void			free_partial_grid(char **grid, int count);
 void			free_map(t_map *map);
 
 /* ************************************************************************** */
@@ -181,6 +225,9 @@ void			free_map(t_map *map);
 
 int				init_image(t_data *data);
 int				init_mlx(t_data *data);
+int				setup_window(t_data *data);
+void			destroy_images(t_data *data);
+void			destroy_game(t_data *data);
 
 /* ************************************************************************** */
 /* Render functions															  */
@@ -199,6 +246,7 @@ void			render_raycasting(t_data *data);
 int				render_loop(void *param);
 void			fill_row(t_data *data, int y, int color);
 int				rgb_to_int(int rgb[3]);
+void				render_floor_ceiling_textured(t_data *data, int center);
 
 /* ************************************************************************** */
 /* Raycasting functions														  */
@@ -231,9 +279,25 @@ void			strafe_player(t_map *map, int direction);
 void			rotate_player(t_map *map, double angle);
 void			set_key_state(t_data *data, int keysym, int pressed);
 void			process_input(t_data *data);
+void				handle_mouse_delta(t_data *data, int delta_x, int delta_y);
 int				handle_keypress(int keysym, t_data *data);
 int				handle_keyrelease(int keysym, t_data *data);
 int				setup_hooks(t_data *data);
 
+/* extraction helpers */
+char			*get_map_base_dir(const char *filename);
+void			init_map(t_map *map);
+void			free_map_paths(t_map *map);
+void			free_partial_grid(char **grid, int count);
+
+/* validation helpers */
+char			*strip_line(const char *s);
+int				is_valid_map_char(char ch);
+int				is_player_char(char ch);
+
+/* render helpers */
+int				sample_tex(t_texture *tex, int tx, int ty);
+int				render_draw_textured_column(t_data *data, int x, t_dda *dda,
+					int col[3]);
 
 #endif

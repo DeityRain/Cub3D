@@ -13,14 +13,6 @@
 #include "cub3d.h"
 
 /*
-** is_player_char: Checks whether tile is a player start marker.
-*/
-static int	is_player_char(char ch)
-{
-	return (ch == 'N' || ch == 'S' || ch == 'E' || ch == 'W');
-}
-
-/*
 ** set_player_dir: Sets direction and camera plane from orientation marker.
 */
 static void	set_player_dir(t_map *map, char dir)

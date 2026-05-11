@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qdeffaux <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: qdeffaux <qdeffaux@student.42luxembourg.lu> +#+  +:+       +#+       */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 12:58:31 by qdeffaux          #+#    #+#             */
 /*   Updated: 2026/05/07 12:58:33 by qdeffaux         ###   ########.fr       */
@@ -13,18 +13,36 @@
 #include "cub3d.h"
 
 /*
-** can_move_to: Returns 1 if the target grid position is not a wall.
+** can_move_to: Returns 1 if the target grid position is not a wall,
+** with collision buffer to prevent getting too close to walls.
 */
 int	can_move_to(t_map *map, double x, double y)
 {
 	int	map_x;
 	int	map_y;
 
-	map_x = (int)x;
-	map_y = (int)y;
+	map_x = (int)(x + COLLISION_BUFFER);
+	map_y = (int)(y + COLLISION_BUFFER);
 	if (map_x < 0 || map_y < 0 || map_x >= map->width || map_y >= map->height)
 		return (0);
-	return (map->grid[map_y][map_x] != '1');
+	if (map->grid[map_y][map_x] == '1')
+		return (0);
+	map_x = (int)(x - COLLISION_BUFFER);
+	if (map_x < 0 || map_x >= map->width)
+		return (0);
+	if (map->grid[map_y][map_x] == '1')
+		return (0);
+	map_y = (int)(y - COLLISION_BUFFER);
+	if (map_y < 0 || map_y >= map->height)
+		return (0);
+	if (map->grid[map_y][map_x] == '1')
+		return (0);
+	map_x = (int)(x + COLLISION_BUFFER);
+	if (map_x >= map->width)
+		return (0);
+	if (map->grid[map_y][map_x] == '1')
+		return (0);
+	return (1);
 }
 
 /*
