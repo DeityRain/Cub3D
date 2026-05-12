@@ -18,6 +18,7 @@ Key files:
 - `src/main.c` - entry point
 - `inc/cub3d.h` - shared structures and function declarations
 - `src/parsing/*` - map reading and validation
+- `src/parsing/header_parsing_helper.c` - header dispatch and directive parsing
 - `src/init/*` - MLX and window setup
 - `src/movement/*` - input and player movement
 - `src/raycasting/*` - DDA raycasting logic
@@ -88,11 +89,13 @@ Files: `src/parsing/file_reader.c`, `src/parsing/header_parsing.c`, `src/parsing
 - It expands buffer capacity dynamically and returns `lines` and `count`.
 
 4.3 Header parsing
-- Header tokens are parsed by `parse_header()` in `src/parsing/header_parsing.c`.
+- Header tokens are parsed by `parse_header()` in `src/parsing/header_parsing.c`, with line dispatch performed by `parse_header_line()` in `src/parsing/header_parsing_helper.c`.
 - Supported header keys:
   - `NO`, `SO`, `WE`, `EA`: wall texture paths
-  - `F`: floor color in `R,G,B` or optional floor texture path
-  - `C`: ceiling color in `R,G,B` or optional ceiling texture path
+  - `F`: either a floor color in `R,G,B` or a floor texture path
+  - `C`: either a ceiling color in `R,G,B` or a ceiling texture path
+- Legacy keys `FT` and `CT` are also accepted for floor/ceiling textures.
+- Duplicate or unknown header keys now produce a clear `Error: invalid or duplicate header key` failure.
 - Each parser stores values in `t_map`.
 
 4.4 Map extraction
@@ -157,10 +160,13 @@ File: `src/texture/texture_load.c`
 6.1 Loading wall textures
 - `load_wall_texture()` tries to load each wall texture path into `data->tex[0..3]`.
 - It uses `load_one_texture()` and `mlx_xpm_file_to_image()`.
-- If a texture fails, the engine keeps running and falls back to solid wall colors.
+- If a wall texture fails to load, the program prints `Error: failed to load wall textures` and initialization fails.
 
 6.2 Loading floor/ceiling textures
-- If optional `FT` or `CT` paths are provided, `load_all_textures()` also loads `floor_tex` and `ceil_tex`.
+- If floor or ceiling texture paths are provided via `F`, `C`, `FT`, or `CT`, `load_all_textures()` loads `floor_tex` and `ceil_tex`.
+- If a floor texture path fails to load, the program prints `Error: failed to load floor textures` and exits.
+- If a ceiling texture path fails to load, the program prints `Error: failed to load ceiling textures` and exits.
+- If no floor/ceiling textures are provided, solid colors are used instead.
 
 6.3 Full path building
 - `make_full_path()` builds an absolute path from either the current working directory or a relative path.
@@ -316,9 +322,11 @@ Files: `src/render/render_floor_ceiling.c`, `src/render/render_floor_ceiling_hel
 
 10.4 Design choices worth mentioning
 - `pad_map_grid()` adds a border of walls around the original map to simplify flood-fill and raycasting.
+- `make_inner_row()` safely pads short map lines with spaces so padded rows preserve the original layout without memory errors.
 - `player_x` and `player_y` are centered inside the map cell: this is why movement and ray origin are stable.
 - The engine supports optional floor/ceiling textures in addition to solid colors.
-- If wall textures fail to load, the program still renders using simple shading.
+- If wall textures fail to load, initialization now fails with a clear message instead of silently falling back.
+- Floor and ceiling texture loading also fail fast with separate error messages for floor vs ceiling.
 
 ---
 
@@ -343,7 +351,7 @@ Use this structure:
    - Ctrl releases the mouse pointer safely
 6. Mention robustness:
    - memory cleanup in `destroy_game()`
-   - fallback to solid wall color when textures fail
+   - invalid texture paths stop initialization with explicit error messages
    - safe `.cub` validation and map enclosure checks
 
 12. KEY FUNCTIONS TO REMEMBER
@@ -371,6 +379,7 @@ Use this structure:
 - Player movement uses a collision buffer to stop before walls.
 - Mouse capture is intentionally released with Ctrl and recaptured on release.
 - Texture loading is flexible: walls may be textured, and floors/ceilings can also use textures.
+- Invalid wall or floor/ceiling texture paths now stop initialization with explicit errors instead of silently falling back.
 - The renderer draws a full image buffer and pushes it in one call to the window.
 
 End of notes.
