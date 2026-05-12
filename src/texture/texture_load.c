@@ -32,20 +32,14 @@ static int	make_full_path(char full_path[512], char *path)
 
 int	load_wall_texture(t_data *data)
 {
-	int	loaded;
-
-	loaded = 0;
-	if (load_one_texture(data, 0, data->map.no_path))
-		loaded++;
-	if (load_one_texture(data, 1, data->map.so_path))
-		loaded++;
-	if (load_one_texture(data, 2, data->map.we_path))
-		loaded++;
-	if (load_one_texture(data, 3, data->map.ea_path))
-		loaded++;
-	if (loaded < 4)
-		ft_putendl_fd("Warning: Some textures failed to load, "
-			"using fallback colors", 2);
+	if (!load_one_texture(data, 0, data->map.no_path)
+		|| !load_one_texture(data, 1, data->map.so_path)
+		|| !load_one_texture(data, 2, data->map.we_path)
+		|| !load_one_texture(data, 3, data->map.ea_path))
+	{
+		ft_putendl_fd("Error: failed to load wall textures", 2);
+		return (0);
+	}
 	return (1);
 }
 
@@ -79,14 +73,19 @@ int	load_one_texture(t_data *data, int index, char *path)
 
 int	load_all_textures(t_data *data)
 {
-	int	ok;
-
-	ok = load_wall_texture(data);
-	if (data->map.floor_tex_path)
-		load_texture_to(&data->floor_tex, data->mlx_ptr,
-			data->map.floor_tex_path);
-	if (data->map.ceil_tex_path)
-		load_texture_to(&data->ceil_tex, data->mlx_ptr,
-			data->map.ceil_tex_path);
-	return (ok);
+	if (!load_wall_texture(data))
+		return (0);
+	if (data->map.floor_tex_path && !load_texture_to(&data->floor_tex,
+			data->mlx_ptr, data->map.floor_tex_path))
+	{
+		ft_putendl_fd("Error: failed to load floor textures", 2);
+		return (0);
+	}
+	if (data->map.ceil_tex_path && !load_texture_to(&data->ceil_tex,
+			data->mlx_ptr, data->map.ceil_tex_path))
+	{
+		ft_putendl_fd("Error: failed to load ceiling textures", 2);
+		return (0);
+	}
+	return (1);
 }

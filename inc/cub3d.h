@@ -212,8 +212,20 @@ int				parse_cub_file(const char *filename, t_map *map);
 int				pad_map_grid(t_map *map);
 int				extract_player_data(t_map *map);
 int				check_map_enclosed(t_map *map);
+int				parse_no_texture(t_map *map, const char *line, int *parsed);
+int				parse_so_texture(t_map *map, const char *line, int *parsed);
+int				parse_we_texture(t_map *map, const char *line, int *parsed);
+int				parse_ea_texture(t_map *map, const char *line, int *parsed);
+int				parse_floor_color(t_map *map, const char *line, int *parsed);
+int				parse_ceiling_color(t_map *map, const char *line, int *parsed);
 int				parse_floor_texture(t_map *map, const char *line, int *parsed);
 int				parse_ceil_texture(t_map *map, const char *line, int *parsed);
+int				parse_floor_directive(t_map *map, const char *line,
+					int *parsed);
+int				parse_ceiling_directive(t_map *map, const char *line,
+					int *parsed);
+int				is_line_empty(const char *s);
+int				is_map_line(const char *s);
 void			free_partial_grid(char **grid, int count);
 void			free_map(t_map *map);
 

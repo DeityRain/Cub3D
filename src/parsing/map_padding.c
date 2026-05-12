@@ -34,7 +34,11 @@ static char	*make_inner_row(const char *src, int width)
 {
 	char	*row;
 	int		i;
+	int		src_len;
 
+	src_len = 0;
+	if (src)
+		src_len = ft_strlen(src);
 	row = malloc(sizeof(char) * (width + 3));
 	if (!row)
 		return (NULL);
@@ -42,7 +46,7 @@ static char	*make_inner_row(const char *src, int width)
 	i = 0;
 	while (i < width)
 	{
-		if (src && src[i])
+		if (i < src_len)
 			row[i + 1] = src[i];
 		else
 			row[i + 1] = ' ';

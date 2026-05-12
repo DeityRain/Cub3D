@@ -12,62 +12,65 @@
 
 #include "cub3d.h"
 
-extern int	parse_no_texture(t_map *map, const char *line, int *parsed);
-extern int	parse_so_texture(t_map *map, const char *line, int *parsed);
-extern int	parse_we_texture(t_map *map, const char *line, int *parsed);
-extern int	parse_ea_texture(t_map *map, const char *line, int *parsed);
-extern int	parse_floor_color(t_map *map, const char *line, int *parsed);
-extern int	parse_ceiling_color(t_map *map, const char *line, int *parsed);
-extern int	parse_floor_texture(t_map *map, const char *line, int *parsed);
-extern int	parse_ceil_texture(t_map *map, const char *line, int *parsed);
-extern int	is_line_empty(const char *s);
-extern int	is_map_line(const char *s);
-
-/*
-** parse_header_line: Routes header line to appropriate parser.
-*/
-int	parse_header_line(t_map *map, const char *line, int *parsed)
+static char	*get_value_after_key(const char *line, int key_len)
 {
-	if (!line || !parsed || !map)
-		return (0);
-	if (ft_strncmp(line, "NO", 2) == 0 && (line[2] == ' ' || line[2] == '\t'))
-		return (parse_no_texture(map, line, parsed));
-	if (ft_strncmp(line, "SO", 2) == 0 && (line[2] == ' ' || line[2] == '\t'))
-		return (parse_so_texture(map, line, parsed));
-	if (ft_strncmp(line, "WE", 2) == 0 && (line[2] == ' ' || line[2] == '\t'))
-		return (parse_we_texture(map, line, parsed));
-	if (ft_strncmp(line, "EA", 2) == 0 && (line[2] == ' ' || line[2] == '\t'))
-		return (parse_ea_texture(map, line, parsed));
-	if (ft_strncmp(line, "FT", 2) == 0 && (line[2] == ' ' || line[2] == '\t'))
-		return (parse_floor_texture(map, line, parsed));
-	if (ft_strncmp(line, "CT", 2) == 0 && (line[2] == ' ' || line[2] == '\t'))
-		return (parse_ceil_texture(map, line, parsed));
-	if (line[0] == 'F' && (line[1] == ' ' || line[1] == '\t'))
-		return (parse_floor_color(map, line, parsed));
-	if (line[0] == 'C' && (line[1] == ' ' || line[1] == '\t'))
-		return (parse_ceiling_color(map, line, parsed));
+	const char	*p;
+	char		*value;
+
+	p = line + key_len;
+	while (*p && (*p == ' ' || *p == '\t'))
+		p++;
+	value = ft_strtrim(p, " \t\n");
+	return (value);
+}
+
+static int	has_rgb_format(const char *line)
+{
+	const char	*p;
+
+	p = line + 1;
+	while (*p && (*p == ' ' || *p == '\t'))
+		p++;
+	while (*p)
+	{
+		if (*p == ',')
+			return (1);
+		if (*p == '\n' || *p == '\r')
+			break ;
+		p++;
+	}
 	return (0);
 }
 
-/*
-** parse_header: Processes header section until 8 tokens or map found.
-*/
-int	parse_header(char **lines, int count, int *idx, t_map *map)
+int	parse_floor_directive(t_map *map, const char *line, int *parsed)
 {
-	int	parsed;
+	char	*value;
 
-	parsed = 0;
-	while (*idx < count && parsed < 8)
-	{
-		if (!is_line_empty(lines[*idx]))
-		{
-			if (is_map_line(lines[*idx]))
-				break ;
-			if (!parse_header_line(map, lines[*idx], &parsed))
-				return (0);
-		}
-		(*idx)++;
-	}
+	if (!map || !line || !parsed)
+		return (0);
+	if (has_rgb_format(line))
+		return (parse_floor_color(map, line, parsed));
+	value = get_value_after_key(line, 1);
+	if (!value)
+		return (0);
+	map->floor_tex_path = value;
+	(*parsed)++;
+	return (1);
+}
+
+int	parse_ceiling_directive(t_map *map, const char *line, int *parsed)
+{
+	char	*value;
+
+	if (!map || !line || !parsed)
+		return (0);
+	if (has_rgb_format(line))
+		return (parse_ceiling_color(map, line, parsed));
+	value = get_value_after_key(line, 1);
+	if (!value)
+		return (0);
+	map->ceil_tex_path = value;
+	(*parsed)++;
 	return (1);
 }
 

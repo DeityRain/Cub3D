@@ -2,8 +2,8 @@ NO ./textures/blue_one/north.xpm
 SO ./textures/blue_one/south.xpm
 WE ./textures/blue_one/west.xpm
 EA ./textures/blue_one/east.xpm
-F ./textures/blue_one/floor.xpm
-C ./textures/blue_one/ceiling.xpm
+F 211,211,211
+C 135,206,235
 
 111111
 100101
