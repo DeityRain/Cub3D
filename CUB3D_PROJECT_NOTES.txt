@@ -3,7 +3,9 @@ CUB3D PROJECT NOTES
 
 1. OVERVIEW
 -----------
-This Cub3D project is a Wolfenstein-style 3D raycasting engine built in C with the MiniLibX library. It reads a `.cub` configuration map, validates it, loads textures, and renders a first-person view by casting one ray per screen column.
+This Cub3D project is a Wolfenstein-style 3D raycasting engine built in C with the MiniLibX library. 
+It reads a `.cub` configuration map, validates it, loads textures, and renders a first-person view 
+by casting one ray per screen column.
 
 The engine includes:
 - map parsing and validation

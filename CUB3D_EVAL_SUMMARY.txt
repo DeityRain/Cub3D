@@ -1,0 +1,94 @@
+==============================================================================================================
+
+
+Q: How is the map file structured?
+
+A: The .cub map file is split into two sections.
+   1) Header section: texture/color directives and optional settings.
+      - Example directives:
+        NO ./textures/north.xpm
+        SO ./textures/south.xpm
+        WE ./textures/west.xpm
+        EA ./textures/east.xpm
+        F 220,100,0   or F ./textures/floor.xpm
+        C 100,100,255 or C ./textures/ceiling.xpm
+      - The parser accepts either a texture path or an RGB color for floor and ceiling.
+   2) Map grid section: a rectangular grid of characters.
+      - '1' = wall
+      - '0' = empty floor
+      - 'N', 'S', 'E', 'W' = player start position and orientation
+      - The map must be enclosed by walls and should not contain invalid characters.
+
+==============================================================================================================
+
+Q: How does parsing work?
+
+A: Parsing happens in several stages:
+   1) Read the entire .cub file into lines.
+   2) Parse the header directives.
+      - `parse_header()` scans lines from the top and handles each directive.
+      - `parse_floor_directive()` and `parse_ceiling_directive()` check whether the value is an RGB color or a texture path.
+      - If the line contains commas, it parses it as `R,G,B` values in range 0-255.
+   3) Find the start and end of the actual map grid.
+      - `find_map_bounds()` skips empty lines and finds the first and last non-empty rows.
+   4) Collect the grid lines into `map->grid` and set `map->width` / `map->height`.
+   5) Validate the map.
+      - `validate_map_chars()` ensures only allowed characters appear.
+      - `check_map_enclosed()` ensures walls fully surround the map.
+   6) Pad the map if needed.
+      - The parser may pad rows so the grid is rectangular and easier to traverse.
+   7) Extract player data.
+      - `extract_player_data()` finds one start position (N/S/E/W), stores player coordinates, and replaces that cell with floor.
+
+
+==============================================================================================================
+
+
+Q: How does raycasting / DDA find walls?
+A: Raycasting sends one ray per screen column and uses DDA to walk the grid.
+   1) For each column `x`, compute the ray direction:
+      - `camera_x = 2 * x / WIN_WIDTH - 1`
+      - `ray_dir = dir + plane * camera_x`
+      - This maps the screen column to a direction in world space.
+   2) Initialize DDA state for that ray.
+      - `pos_x`, `pos_y` = player position.
+      - `map_x`, `map_y` = integer map cell containing the player.
+      - `delta_dist_x = |1 / ray_dir_x|`, `delta_dist_y = |1 / ray_dir_y|`.
+      - `step_x` / `step_y` = +1 or -1 depending on ray direction.
+      - `side_dist_x` / `side_dist_y` = distance from player to first vertical/horizontal grid line.
+   3) Perform DDA loop:
+      - Compare `side_dist_x` and `side_dist_y`.
+      - Move to the next cell in X or Y direction depending on which distance is smaller.
+      - Increment the chosen side distance by its delta.
+      - Set `side = 0` for an X-side hit or `1` for a Y-side hit.
+      - Repeat until the ray hits a wall cell (`map->grid[y][x] == '1'`).
+   4) Compute perpendicular wall distance:
+      - If hit was X-side: `perp_wall_dist = side_dist_x - delta_dist_x`
+      - If hit was Y-side: `perp_wall_dist = side_dist_y - delta_dist_y`
+      - This distance is used to avoid fish-eye distortion and draw the wall correctly.
+
+
+==============================================================================================================
+
+
+Q: How does rendering turn distances into vertical slices?
+A: Once the wall distance is known, rendering draws a vertical slice on that screen column.
+   1) Compute line height:
+      - `line_height = WIN_HEIGHT / perp_wall_dist`
+      - Closer walls produce taller slices, farther walls produce shorter slices.
+   2) Compute draw start/end positions:
+      - `draw_start = (WIN_HEIGHT - line_height) / 2 + pitch_offset`
+      - `draw_end = (WIN_HEIGHT + line_height) / 2 + pitch_offset`
+      - Clamp both values to the screen bounds.
+   3) Draw the slice:
+      - If no textures are loaded, fill the column with a solid wall color.
+      - If textures are available, sample the wall texture using the hit location and draw the textured column.
+   4) The full frame is built by repeating this for every column from left to right.
+
+Notes for evaluation:
+- The project separates parsing, DDA, ray direction calculation, and drawing clearly.
+- The map file is simple and deterministic: header first, then the grid.
+- DDA is the core algorithm that makes raycasting efficient by stepping cell-by-cell.
+- Rendering converts 3D-style distance into 2D vertical slices using `line_height`.
+
+==============================================================================================================
