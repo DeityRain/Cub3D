@@ -14,19 +14,14 @@
 
 static int	make_full_path(char full_path[512], char *path)
 {
-	char	*cwd;
 	char	*rel;
 
 	if (!path)
 		return (0);
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-		return (0);
 	rel = path;
 	if (path[0] == '.' && path[1] == '/')
 		rel = path + 2;
-	snprintf(full_path, 512, "%s/%s", cwd, rel);
-	free(cwd);
+	ft_strlcpy(full_path, rel, 512);
 	return (1);
 }
 

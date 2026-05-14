@@ -34,7 +34,7 @@ int	init_image(t_data *data)
 	data->img.img_ptr = mlx_new_image(data->mlx_ptr, WIN_WIDTH, WIN_HEIGHT);
 	if (!data->img.img_ptr)
 	{
-		fprintf(stderr, "Error: Failed to create new image\n");
+		ft_putendl_fd("Error: Failed to create new image", 2);
 		return (0);
 	}
 	data->img.addr = mlx_get_data_addr(data->img.img_ptr,
@@ -42,7 +42,7 @@ int	init_image(t_data *data)
 			&data->img.endian);
 	if (!data->img.addr)
 	{
-		fprintf(stderr, "Error: Failed to get image data address\n");
+		ft_putendl_fd("Error: Failed to get image data address", 2);
 		mlx_destroy_image(data->mlx_ptr, data->img.img_ptr);
 		data->img.img_ptr = NULL;
 		return (0);
