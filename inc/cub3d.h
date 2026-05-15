@@ -45,15 +45,15 @@
 # define WIN_HEIGHT 768
 
 // Movement speeds
-# define MOVE_SPEED 0.08
-# define ROT_SPEED 0.09
+# define MOVE_SPEED 0.05
+# define ROT_SPEED 0.07
 # define MOUSE_ROT_SPEED 0.0002
 // Mouse vertical look
-# define MOUSE_PITCH_SPEED 0.07
+# define MOUSE_PITCH_SPEED 0.15
 // keep player away from walls
 # define COLLISION_BUFFER 0.2
 // Keyboard vertical look
-# define PITCH_SPEED 38
+# define PITCH_SPEED 35
 
 /* ************************************************************************** */
 /* Structures																  */
@@ -224,6 +224,7 @@ int				parse_floor_directive(t_map *map, const char *line,
 					int *parsed);
 int				parse_ceiling_directive(t_map *map, const char *line,
 					int *parsed);
+int				parse_color(const char *s, int out[3]);
 int				is_line_empty(const char *s);
 int				is_map_line(const char *s);
 void			free_partial_grid(char **grid, int count);

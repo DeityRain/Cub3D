@@ -1,0 +1,10 @@
+NO ./textures/smallest_one/north.xpm
+SO ./textures/smallest_one/south.xpm
+WE ./textures/smallest_one/west.xpm
+EA ./textures/smallest_one/east.xpm
+F  120,120,120
+C  120,120,120
+
+111
+1N1
+111

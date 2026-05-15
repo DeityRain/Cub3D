@@ -3,7 +3,7 @@ NAME        = cub3D
 
 # --- Compilation ---
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -Iinc -I$(MLX_PATH)
+CFLAGS      = -Wall -Wextra -Werror -g -O3 -Iinc -I$(MLX_PATH)
 
 # --- Directories ---
 MLX_PATH    = ./minilibx

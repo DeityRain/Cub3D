@@ -47,10 +47,39 @@ static int	validate_rgb_values(char **parts, int out[3])
 	return (1);
 }
 
+static int	is_strict_rgb_format(const char *s)
+{
+	int	comma_count;
+	int	i;
+
+	comma_count = 0;
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == ',')
+			comma_count++;
+		else if (!ft_isdigit(s[i]) && s[i] != ' ' && s[i] != '\t'
+			&& s[i] != '\n' && s[i] != '\r')
+			return (0);
+		i++;
+	}
+	return (comma_count == 2);
+}
+
+/*
+** print_color_error
+*/
+static int	print_color_error(char *trimmed)
+{
+	ft_putendl_fd("Error: invalid strict RGB format", 2);
+	free(trimmed);
+	return (0);
+}
+
 /*
 ** parse_color: Parses "R,G,B" format into 3 integers [0-255].
 */
-static int	parse_color(const char *s, int out[3])
+int	parse_color(const char *s, int out[3])
 {
 	char	*trimmed;
 	char	**parts;
@@ -61,6 +90,8 @@ static int	parse_color(const char *s, int out[3])
 	trimmed = ft_strtrim(s, " \t");
 	if (!trimmed)
 		return (0);
+	if (!is_strict_rgb_format(trimmed))
+		return (print_color_error(trimmed));
 	parts = ft_split(trimmed, ',');
 	free(trimmed);
 	if (!parts)
@@ -73,37 +104,5 @@ static int	parse_color(const char *s, int out[3])
 	if (!validate_rgb_values(parts, out))
 		return (free_split(parts), 0);
 	free_split(parts);
-	return (1);
-}
-
-/*
-** parse_floor_color: Parses F floor color (R,G,B).
-*/
-int	parse_floor_color(t_map *map, const char *line, int *parsed)
-{
-	int	out[3];
-
-	if (!parse_color(line + 1, out))
-		return (0);
-	map->floor_rgb[0] = out[0];
-	map->floor_rgb[1] = out[1];
-	map->floor_rgb[2] = out[2];
-	(*parsed)++;
-	return (1);
-}
-
-/*
-** parse_ceiling_color: Parses C ceiling color (R,G,B).
-*/
-int	parse_ceiling_color(t_map *map, const char *line, int *parsed)
-{
-	int	out[3];
-
-	if (!parse_color(line + 1, out))
-		return (0);
-	map->ceil_rgb[0] = out[0];
-	map->ceil_rgb[1] = out[1];
-	map->ceil_rgb[2] = out[2];
-	(*parsed)++;
 	return (1);
 }
