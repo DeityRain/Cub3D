@@ -38,6 +38,8 @@ static int	load_and_setup_map(const char *filename, t_map *map,
 	i = 0;
 	if (!parse_header(lines, count, &i, map))
 		return (free_lines_array(lines, count), 0);
+	while (i < count && is_line_empty(lines[i]))
+		i++;
 	if (!find_map_bounds(lines, count, start, end))
 		return (free_lines_array(lines, count), free_map(map), 0);
 	h = *end - i + 1;

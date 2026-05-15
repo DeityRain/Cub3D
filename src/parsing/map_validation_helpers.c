@@ -19,6 +19,7 @@ char	*strip_line(const char *s)
 {
 	char	*dup;
 	int		len;
+	int		i;
 
 	dup = ft_strdup(s);
 	if (!dup)
@@ -26,6 +27,13 @@ char	*strip_line(const char *s)
 	len = ft_strlen(dup);
 	while (len > 0 && (dup[len - 1] == '\n' || dup[len - 1] == '\r'))
 		dup[--len] = '\0';
+	i = 0;
+	while (dup[i])
+	{
+		if (dup[i] == ' ' || dup[i] == '\t')
+			dup[i] = '1';
+		i++;
+	}
 	return (dup);
 }
 
@@ -34,7 +42,7 @@ char	*strip_line(const char *s)
 */
 int	is_valid_map_char(char ch)
 {
-	return (ch == '0' || ch == '1' || ch == ' '
+	return (ch == '0' || ch == '1' || ch == ' ' || ch == '\t'
 		|| ch == 'N' || ch == 'S' || ch == 'E' || ch == 'W');
 }
 

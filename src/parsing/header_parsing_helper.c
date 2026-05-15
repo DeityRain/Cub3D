@@ -54,6 +54,8 @@ int	parse_header_line(t_map *map, const char *line, int *parsed)
 
 	if (!line || !parsed || !map)
 		return (0);
+	while (*line == ' ' || *line == '\t')
+		line++;
 	result = parse_header_directive(map, line, parsed);
 	if (!result)
 		ft_putendl_fd("Error: invalid or duplicate header key", 2);
