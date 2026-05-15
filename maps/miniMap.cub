@@ -2,7 +2,7 @@ NO ./textures/blue_one/north.xpm
 SO ./textures/blue_one/south.xpm
 WE ./textures/blue_one/west.xpm
 EA ./textures/blue_one/east.xpm
-F 0,0,0./textures/blue_one/floor.xpm
+F 0,0,0
 C 0,0,0 
 
 111111
