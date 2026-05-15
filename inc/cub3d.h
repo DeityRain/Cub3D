@@ -46,14 +46,14 @@
 
 // Movement speeds
 # define MOVE_SPEED 0.08
-# define ROT_SPEED 0.10
+# define ROT_SPEED 0.09
 # define MOUSE_ROT_SPEED 0.0002
 // Mouse vertical look
 # define MOUSE_PITCH_SPEED 0.07
 // keep player away from walls
 # define COLLISION_BUFFER 0.2
 // Keyboard vertical look
-# define PITCH_SPEED 40
+# define PITCH_SPEED 38
 
 /* ************************************************************************** */
 /* Structures																  */
