@@ -73,7 +73,7 @@ static int	print_color_error(char *trimmed)
 {
 	ft_putendl_fd("Error: invalid strict RGB format", 2);
 	free(trimmed);
-	return (0);
+	return (-1);
 }
 
 /*
